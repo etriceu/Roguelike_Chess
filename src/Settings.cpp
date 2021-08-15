@@ -1,8 +1,8 @@
 #include <fstream>
 #include "Settings.hpp"
 
-Settings::Settings(string path)
-	: path(path)
+Settings::Settings(sf::RenderWindow *window, string path, string title)
+	: window(window), path(path), title(title)
 {
 	fstream cfg(path, ios::in);
 	if(!cfg.good())
@@ -56,3 +56,23 @@ void Settings::save()
 
 	cfg.close();
 }
+
+void Settings::apply()
+{
+	window->setActive(false);
+	window->create(mode, title, fullScreen ? sf::Style::Fullscreen :
+		sf::Style::None | sf::Style::Close | sf::Style::Titlebar);
+
+	if(maxFPS >= 0 && !vsync)
+		window->setFramerateLimit(maxFPS);
+
+	window->setVerticalSyncEnabled(vsync);
+
+	if(!fullScreen)
+		window->setPosition(sf::Vector2i(
+			(sf::VideoMode::getDesktopMode().width-mode.width)/2,
+			(sf::VideoMode::getDesktopMode().height-mode.height)/2));
+
+	window->setActive(true);
+}
+

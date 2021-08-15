@@ -3,6 +3,7 @@
 
 #include "Resources.hpp"
 #include "Settings.hpp"
+#include "MainMenu.hpp"
 
 class Game
 {
@@ -21,6 +22,7 @@ private:
 	static void renderThread(Game *game);
 
 	Settings settings;
+	MainMenu mainMenu;
 
 	sf::RenderWindow window;
 	sf::Event event;

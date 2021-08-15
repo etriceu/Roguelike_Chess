@@ -1,0 +1,91 @@
+#include "MainMenu.hpp"
+
+void MainMenu::functions()
+{
+	funcs = {
+		{
+			[](MainMenu* it, int){log(it->swapped ? "M6\n" : "M1\n");},
+			[](MainMenu* it, int){log("M2\n");},
+			[](MainMenu* it, int)
+			{
+				if(!it->swapped)
+				{
+					it->swapped = true;
+					it->menu[MAIN][0] = sf::Text(it->text[MAIN][5],
+										*fonts(it->fontPath), it->textSize);
+					it->menu[MAIN][0].setFillColor(it->inactiveColor);
+					it->resize();
+				}
+			},
+			[](MainMenu* it, int)
+			{
+				it->current = 0;
+				it->state = SETTINGS;
+				it->tmpSett = *it->settings;
+				for(size_t n = 0; n < it->menu[SETTINGS].size()-2; n++)
+					it->funcs[SETTINGS][n](it, NONE);
+			},
+			[](MainMenu*, int){exit(0);}
+		},
+		{
+			[](MainMenu* it, int n)
+			{
+				if(n != NONE)
+					it->tmpSett.fullScreen = !it->tmpSett.fullScreen;
+
+				it->menu[SETTINGS][0].setString(it->text[SETTINGS][0] +
+					(it->tmpSett.fullScreen ? "true" : "false"));
+				it->resize();
+			},
+			[](MainMenu* it, int n)
+			{
+				if(n != NONE)
+					it->tmpSett.vsync = !it->tmpSett.vsync;
+
+				it->menu[SETTINGS][1].setString(it->text[SETTINGS][1] +
+					(it->tmpSett.vsync ? "true" : "false"));
+				it->resize();
+			},
+			[](MainMenu* it, int n)
+			{
+				if(n == NEXT)
+					it->tmpSett.maxFPS += 10;
+				else if(n == PREVIOUS)
+					it->tmpSett.maxFPS -= 10;
+
+				if(it->tmpSett.maxFPS <= 0)
+				{
+					it->tmpSett.maxFPS = 0;
+					it->menu[SETTINGS][2].setString(it->text[SETTINGS][2] + "unlimited");
+				}
+				else
+					it->menu[SETTINGS][2].setString(it->text[SETTINGS][2] +
+						to_string(it->tmpSett.maxFPS));
+
+				it->resize();
+			},
+			[](MainMenu* it, int n)
+			{
+				if(n == NEXT && it->mode < it->tmpSett.modes.size()-1)
+					it->mode++;
+				else if(n == PREVIOUS && it->mode > 0)
+					it->mode--;
+
+				if(n != NONE)
+					it->tmpSett.mode = it->tmpSett.modes[it->mode];
+
+				it->menu[SETTINGS][3].setString(it->text[SETTINGS][3] +
+					to_string(it->tmpSett.mode.width) + "x" +
+					to_string(it->tmpSett.mode.height));
+				it->resize();
+			},
+			[](MainMenu* it, int)
+			{
+				*it->settings = it->tmpSett;
+				it->settings->apply();
+				it->settings->save();
+			},
+			[](MainMenu* it, int){it->current = 0; it->state = MAIN;}
+		}
+	};
+}

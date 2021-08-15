@@ -1,7 +1,7 @@
 #include "Game.hpp"
 
 Game::Game()
-	: settings(configFile)
+	: settings(&window, configFile, title), mainMenu(&settings, title)
 {
 
 }
@@ -13,12 +13,6 @@ Game::~Game()
 
 void Game::run()
 {
-	window.create(settings.mode, title, settings.fullScreen ? sf::Style::Fullscreen : sf::Style::Default);
-	window.setActive(false);
-
-	if(settings.maxFPS > 0 && !settings.vsync)
-		window.setFramerateLimit(settings.maxFPS);
-
 	sf::Thread thread(&renderThread, this);
     thread.launch();
 
@@ -36,10 +30,11 @@ void Game::events()
 	{
 		sf::Vector2u size(event.size.width, event.size.height);
 		window.setView(sf::View({0, 0, (float)size.x, (float)size.y}));
+		mainMenu.resize();
 	}
 	else
 	{
-
+		mainMenu.event(event);
 	}
 }
 
@@ -50,13 +45,12 @@ void Game::update()
 
 void Game::draw()
 {
-
+	window.draw(mainMenu);
 }
 
 void Game::renderThread(Game* game)
 {
-	game->window.setActive(true);
-	game->window.setVerticalSyncEnabled(game->settings.vsync);
+	game->settings.apply();
 	while(game->window.isOpen())
     {
 		while(game->window.pollEvent(game->event))

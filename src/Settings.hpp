@@ -6,15 +6,22 @@
 
 #include "custom.hpp"
 
-struct Settings
+class Settings
 {
-	Settings(string path);
+public:
+	Settings(){}
+	Settings(sf::RenderWindow *window, string path, string title);
 	void save();
+	void apply();
+
 	bool fullScreen, vsync;
 	short maxFPS;
-	string path;
 	vector <sf::VideoMode> modes;
 	sf::VideoMode mode;
+
+private:
+	sf::RenderWindow *window;
+	string path, title;
 };
 
 #endif // SETTINGS_HPP_INCLUDED
