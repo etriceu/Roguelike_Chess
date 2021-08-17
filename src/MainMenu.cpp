@@ -7,21 +7,21 @@ using namespace std;
 MainMenu::MainMenu(Settings *settings, string title)
 	: settings(settings)
 {
-	sf::Font *font = fonts(fontPath);
+	sf::Font *font = fonts(FONT_PATH);
 	this->title.setFont(*font);
 	this->title.setString(title);
-	this->title.setCharacterSize(titleSize);
+	this->title.setCharacterSize(TITLE_SIZE);
 
-	menu.resize(text.size());
-	for(size_t m = 0; m < text.size(); m++)
-		for(size_t n = 0; n < text[m].size(); n++)
+	menu.resize(TEXT.size());
+	for(size_t m = 0; m < TEXT.size(); m++)
+		for(size_t n = 0; n < TEXT[m].size(); n++)
 		{
-			menu[m].push_back(sf::Text(text[m][n], *font, textSize));
-			menu[m].back().setFillColor(inactiveColor);
+			menu[m].push_back(sf::Text(TEXT[m][n], *font, TEXT_SIZE));
+			menu[m].back().setFillColor(IN_ACT_COLOR);
 		}
 
 	menu[MAIN].pop_back();
-	menu[MAIN][current].setFillColor(activeColor);
+	menu[MAIN][current].setFillColor(ACT_COLOR);
 	functions();
 }
 
@@ -31,7 +31,7 @@ void MainMenu::resize()
 	title.setPosition((size.x-title.getLocalBounds().width)/2,
 					 (size.y-title.getLocalBounds().height)/13);
 
-	for(size_t m = 0; m < text.size(); m++)
+	for(size_t m = 0; m < TEXT.size(); m++)
 		for(size_t n = 0; n < menu[m].size(); n++)
 		{
 			sf::FloatRect r = menu[m][n].getLocalBounds();
@@ -52,9 +52,9 @@ void MainMenu::event(sf::Event e)
 				r.top <= m.y && r.top+r.height >= m.y)
 				current = n;
 			else
-				menu[state][n].setFillColor(inactiveColor);
+				menu[state][n].setFillColor(IN_ACT_COLOR);
 
-			menu[state][current].setFillColor(activeColor);
+			menu[state][current].setFillColor(ACT_COLOR);
 		}
 	}
 	else if(e.type == sf::Event::MouseButtonReleased &&
@@ -74,7 +74,7 @@ void MainMenu::event(sf::Event e)
 	}
 	if(e.type == sf::Event::KeyPressed)
 	{
-		menu[state][current].setFillColor(inactiveColor);
+		menu[state][current].setFillColor(IN_ACT_COLOR);
 
 		if(e.key.code == sf::Keyboard::Enter || e.key.code == sf::Keyboard::D ||
 			e.key.code == sf::Keyboard::Right)
@@ -91,7 +91,7 @@ void MainMenu::event(sf::Event e)
 		else if(current > (int)menu[state].size()-1)
 			current = 0;
 
-		menu[state][current].setFillColor(activeColor);
+		menu[state][current].setFillColor(ACT_COLOR);
 	}
 }
 

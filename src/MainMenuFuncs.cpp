@@ -11,9 +11,9 @@ void MainMenu::functions()
 				if(!it->swapped)
 				{
 					it->swapped = true;
-					it->menu[MAIN][0] = sf::Text(it->text[MAIN][5],
-										*fonts(it->fontPath), it->textSize);
-					it->menu[MAIN][0].setFillColor(it->inactiveColor);
+					it->menu[MAIN][0] = sf::Text(it->TEXT[MAIN][5],
+										*fonts(it->FONT_PATH), it->TEXT_SIZE);
+					it->menu[MAIN][0].setFillColor(it->IN_ACT_COLOR);
 					it->resize();
 				}
 			},
@@ -33,7 +33,7 @@ void MainMenu::functions()
 				if(n != NONE)
 					it->tmpSett.fullScreen = !it->tmpSett.fullScreen;
 
-				it->menu[SETTINGS][0].setString(it->text[SETTINGS][0] +
+				it->menu[SETTINGS][0].setString(it->TEXT[SETTINGS][0] +
 					(it->tmpSett.fullScreen ? "true" : "false"));
 				it->resize();
 			},
@@ -42,7 +42,7 @@ void MainMenu::functions()
 				if(n != NONE)
 					it->tmpSett.vsync = !it->tmpSett.vsync;
 
-				it->menu[SETTINGS][1].setString(it->text[SETTINGS][1] +
+				it->menu[SETTINGS][1].setString(it->TEXT[SETTINGS][1] +
 					(it->tmpSett.vsync ? "true" : "false"));
 				it->resize();
 			},
@@ -56,10 +56,10 @@ void MainMenu::functions()
 				if(it->tmpSett.maxFPS <= 0)
 				{
 					it->tmpSett.maxFPS = 0;
-					it->menu[SETTINGS][2].setString(it->text[SETTINGS][2] + "unlimited");
+					it->menu[SETTINGS][2].setString(it->TEXT[SETTINGS][2] + "unlimited");
 				}
 				else
-					it->menu[SETTINGS][2].setString(it->text[SETTINGS][2] +
+					it->menu[SETTINGS][2].setString(it->TEXT[SETTINGS][2] +
 						to_string(it->tmpSett.maxFPS));
 
 				it->resize();
@@ -74,7 +74,7 @@ void MainMenu::functions()
 				if(n != NONE)
 					it->tmpSett.mode = it->tmpSett.modes[it->mode];
 
-				it->menu[SETTINGS][3].setString(it->text[SETTINGS][3] +
+				it->menu[SETTINGS][3].setString(it->TEXT[SETTINGS][3] +
 					to_string(it->tmpSett.mode.width) + "x" +
 					to_string(it->tmpSett.mode.height));
 				it->resize();

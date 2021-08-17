@@ -1,7 +1,7 @@
 #include "Game.hpp"
 
 Game::Game()
-	: settings(&window, configFile, title), mainMenu(&settings, title)
+	: settings(&window, CONF_PATH, TITLE), mainMenu(&settings, TITLE)
 {
 
 }
@@ -61,5 +61,3 @@ void Game::renderThread(Game* game)
 		game->window.display();
 	}
 }
-
-

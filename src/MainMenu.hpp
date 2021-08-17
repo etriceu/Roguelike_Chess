@@ -8,20 +8,19 @@ class MainMenu : public sf::Drawable
 {
 	typedef void (*func)(MainMenu*, int);
 
-	const string fontPath = "Fonts/uni0553.ttf";
-
-	const sf::Color inactiveColor = {127, 127, 127};
-	const sf::Color activeColor = {255, 255, 255};
+	const string FONT_PATH = "Fonts/uni0553.ttf";
+	const sf::Color IN_ACT_COLOR = {127, 127, 127};
+	const sf::Color ACT_COLOR = {255, 255, 255};
+	const int TITLE_SIZE = 64;
+	const int TEXT_SIZE = 24;
 
 	enum State {MAIN, SETTINGS, SAVES};
 	enum {NONE, NEXT, PREVIOUS};
-	const vector <vector<string>> text = {
+
+	const vector <vector<string>> TEXT = {
 		{"Continue", "Load Game", "New Game", "Settings", "Exit", "Save Game"},
 		{"Full Screen: ", "VSync: ", "FPS Limit: ", "Resolution: ", "Apply", "Back"}
 	};
-
-	const int titleSize = 64;
-	const int textSize = 24;
 
 public:
 	MainMenu(Settings *settings, string title);

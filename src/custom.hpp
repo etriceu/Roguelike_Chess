@@ -6,17 +6,17 @@
 
 using namespace std;
 
-static string LOG_FILE = "log.txt";
+#define LOG_FILE "log.txt"
 
 inline void clearLog()
 {
-	FILE *log = fopen(LOG_FILE.c_str(), "w");
+	FILE *log = fopen(LOG_FILE, "w");
 	fclose(log);
 }
 
 inline void log(const char *format, ...)
 {
-	FILE *log = fopen(LOG_FILE.c_str(), "a");
+	FILE *log = fopen(LOG_FILE, "a");
 
 	va_list arg;
 	va_start(arg, format);

@@ -7,8 +7,8 @@
 
 class Game
 {
-	string title = "Roguelike Chess";
-	string configFile = "config.cfg";
+	const string TITLE = "Roguelike Chess";
+	const string CONF_PATH = "config.cfg";
 
 public:
 	Game();
