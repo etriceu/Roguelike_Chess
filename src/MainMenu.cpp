@@ -40,8 +40,9 @@ void MainMenu::resize()
 		}
 }
 
-void MainMenu::event(sf::Event e)
+int MainMenu::event(sf::Event e)
 {
+	int ret = 0;
 	if(e.type == sf::Event::MouseMoved)
 	{
 		sf::Vector2i m(e.mouseMove.x, e.mouseMove.y);
@@ -67,7 +68,7 @@ void MainMenu::event(sf::Event e)
 			if(r.left <= m.x && r.left+r.width >= m.x &&
 				r.top <= m.y && r.top+r.height >= m.y)
 			{
-				funcs[state][n](this, NEXT);
+				ret = funcs[state][n](this, NEXT);
 				break;
 			}
 		}
@@ -78,9 +79,9 @@ void MainMenu::event(sf::Event e)
 
 		if(e.key.code == sf::Keyboard::Enter || e.key.code == sf::Keyboard::D ||
 			e.key.code == sf::Keyboard::Right)
-			funcs[state][current](this, NEXT);
+			ret = funcs[state][current](this, NEXT);
 		else if(e.key.code == sf::Keyboard::A || e.key.code == sf::Keyboard::Left)
-			funcs[state][current](this, PREVIOUS);
+			ret = funcs[state][current](this, PREVIOUS);
 		else if(e.key.code == sf::Keyboard::W || e.key.code == sf::Keyboard::Up)
 			current--;
 		else if(e.key.code == sf::Keyboard::S || e.key.code == sf::Keyboard::Down)
@@ -93,6 +94,7 @@ void MainMenu::event(sf::Event e)
 
 		menu[state][current].setFillColor(ACT_COLOR);
 	}
+	return ret;
 }
 
 void MainMenu::draw(sf::RenderTarget& target, sf::RenderStates states) const

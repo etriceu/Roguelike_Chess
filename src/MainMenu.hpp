@@ -6,7 +6,7 @@
 
 class MainMenu : public sf::Drawable
 {
-	typedef void (*func)(MainMenu*, int);
+	typedef int (*func)(MainMenu*, int);
 
 	const string FONT_PATH = "Fonts/uni0553.ttf";
 	const sf::Color IN_ACT_COLOR = {127, 127, 127};
@@ -23,9 +23,10 @@ class MainMenu : public sf::Drawable
 	};
 
 public:
+	enum {NEW = 1, LOAD};
 	MainMenu(Settings *settings, string title);
 	void resize();
-	void event(sf::Event e);
+	int event(sf::Event e);
 
 private:
 	void functions();

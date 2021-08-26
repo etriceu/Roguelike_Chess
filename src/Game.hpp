@@ -1,14 +1,14 @@
 #ifndef GAME_HPP_INCLUDED
 #define GAME_HPP_INCLUDED
 
-#include "Resources.hpp"
-#include "Settings.hpp"
 #include "MainMenu.hpp"
+#include "World.hpp"
 
 class Game
 {
 	const string TITLE = "Roguelike Chess";
 	const string CONF_PATH = "config.cfg";
+	enum State {MENU, GAME};
 
 public:
 	Game();
@@ -23,6 +23,8 @@ private:
 
 	Settings settings;
 	MainMenu mainMenu;
+	World world;
+	State state = MENU;
 
 	sf::RenderWindow window;
 	sf::Event event;

@@ -34,7 +34,13 @@ void Game::events()
 	}
 	else
 	{
-		mainMenu.event(event);
+		if(state == MENU && mainMenu.event(event) == MainMenu::NEW)
+		{
+			world.newMap();
+			state = GAME;
+		}
+		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
+			state = MENU;
 	}
 }
 
@@ -45,7 +51,15 @@ void Game::update()
 
 void Game::draw()
 {
-	window.draw(mainMenu);
+	switch(state)
+	{
+		case MENU:
+			window.draw(mainMenu);
+			break;
+		case GAME:
+			window.draw(world);
+			break;
+	};
 }
 
 void Game::renderThread(Game* game)

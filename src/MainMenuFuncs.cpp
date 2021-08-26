@@ -4,8 +4,8 @@ void MainMenu::functions()
 {
 	funcs = {
 		{
-			[](MainMenu* it, int){log(it->swapped ? "M6\n" : "M1\n");},
-			[](MainMenu* it, int){log("M2\n");},
+			[](MainMenu* it, int){log(it->swapped ? "M6\n" : "M1\n"); return 0;},
+			[](MainMenu* it, int){log("M2\n"); return 0;},
 			[](MainMenu* it, int)
 			{
 				if(!it->swapped)
@@ -16,6 +16,8 @@ void MainMenu::functions()
 					it->menu[MAIN][0].setFillColor(it->IN_ACT_COLOR);
 					it->resize();
 				}
+				it->current = 0;
+				return (int)NEW;
 			},
 			[](MainMenu* it, int)
 			{
@@ -24,8 +26,9 @@ void MainMenu::functions()
 				it->tmpSett = *it->settings;
 				for(size_t n = 0; n < it->menu[SETTINGS].size()-2; n++)
 					it->funcs[SETTINGS][n](it, NONE);
+				return 0;
 			},
-			[](MainMenu*, int){exit(0);}
+			[](MainMenu*, int){exit(0); return 0;}
 		},
 		{
 			[](MainMenu* it, int n)
@@ -36,6 +39,7 @@ void MainMenu::functions()
 				it->menu[SETTINGS][0].setString(it->TEXT[SETTINGS][0] +
 					(it->tmpSett.fullScreen ? "true" : "false"));
 				it->resize();
+				return 0;
 			},
 			[](MainMenu* it, int n)
 			{
@@ -45,6 +49,7 @@ void MainMenu::functions()
 				it->menu[SETTINGS][1].setString(it->TEXT[SETTINGS][1] +
 					(it->tmpSett.vsync ? "true" : "false"));
 				it->resize();
+				return 0;
 			},
 			[](MainMenu* it, int n)
 			{
@@ -63,6 +68,7 @@ void MainMenu::functions()
 						to_string(it->tmpSett.maxFPS));
 
 				it->resize();
+				return 0;
 			},
 			[](MainMenu* it, int n)
 			{
@@ -78,14 +84,16 @@ void MainMenu::functions()
 					to_string(it->tmpSett.mode.width) + "x" +
 					to_string(it->tmpSett.mode.height));
 				it->resize();
+				return 0;
 			},
 			[](MainMenu* it, int)
 			{
 				*it->settings = it->tmpSett;
 				it->settings->apply();
 				it->settings->save();
+				return 0;
 			},
-			[](MainMenu* it, int){it->current = 0; it->state = MAIN;}
+			[](MainMenu* it, int){it->current = 0; it->state = MAIN; return 0;}
 		}
 	};
 }
