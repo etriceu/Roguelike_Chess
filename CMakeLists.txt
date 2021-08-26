@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
 project(Roguelike_Chess)
 
-add_compile_options(-std=c++11 -O3 -Wall -g)
+add_compile_options(-std=c++17 -O3 -Wall -g)
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
 file(GLOB DATA res/*)
