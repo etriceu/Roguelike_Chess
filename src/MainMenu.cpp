@@ -7,7 +7,7 @@ using namespace std;
 MainMenu::MainMenu(Settings *settings, string title)
 	: settings(settings)
 {
-	sf::Font *font = fonts(FONT_PATH);
+	sf::Font *font = fonts(string(FONT_PATH));
 	this->title.setFont(*font);
 	this->title.setString(title);
 	this->title.setCharacterSize(TITLE_SIZE);

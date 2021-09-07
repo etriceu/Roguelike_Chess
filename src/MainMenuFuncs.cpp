@@ -12,7 +12,7 @@ void MainMenu::functions()
 				{
 					it->swapped = true;
 					it->menu[MAIN][0] = sf::Text(it->TEXT[MAIN][5],
-										*fonts(it->FONT_PATH), it->TEXT_SIZE);
+										*fonts(string(it->FONT_PATH)), it->TEXT_SIZE);
 					it->menu[MAIN][0].setFillColor(it->IN_ACT_COLOR);
 					it->resize();
 				}

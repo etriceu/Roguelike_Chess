@@ -8,7 +8,7 @@ class MainMenu : public sf::Drawable
 {
 	typedef int (*func)(MainMenu*, int);
 
-	const string FONT_PATH = "Fonts/uni0553.ttf";
+	const string_view FONT_PATH = "Fonts/uni0553.ttf";
 	const sf::Color IN_ACT_COLOR = {127, 127, 127};
 	const sf::Color ACT_COLOR = {255, 255, 255};
 	const int TITLE_SIZE = 64;
