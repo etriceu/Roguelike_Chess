@@ -28,7 +28,7 @@ bool Light::addLight(sf::Vector2f pos, sf::Color color, float bright, float radi
 		return false;
 
 	sf::Vector2u ws = rt->getSize();
-	circles.push_back({pos.x/ws.x, (ws.y-pos.y)/ws.y, radius});
+	circles.push_back({pos.x/ws.x, (ws.y-pos.y)/ws.y, radius*WIDTH/ws.x});
 	colors.push_back({color.r/255.f, color.g/255.f, color.b/255.f, bright});
 	return true;
 }
