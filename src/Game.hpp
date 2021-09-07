@@ -6,8 +6,8 @@
 
 class Game
 {
-	const string TITLE = "Roguelike Chess";
-	const string CONF_PATH = "config.cfg";
+	const string_view TITLE = "Roguelike Chess";
+	const string_view CONF_PATH = "config.cfg";
 	enum State {MENU, GAME};
 
 public:
@@ -24,9 +24,12 @@ private:
 	Settings settings;
 	MainMenu mainMenu;
 	World world;
+	Light light;
 	State state = MENU;
+	bool game = true;
 
 	sf::RenderWindow window;
+	sf::RenderTexture preWindow;
 	sf::Event event;
 };
 

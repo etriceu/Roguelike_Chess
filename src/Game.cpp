@@ -1,9 +1,11 @@
 #include "Game.hpp"
 
 Game::Game()
-	: settings(&window, CONF_PATH, TITLE), mainMenu(&settings, TITLE)
+	: settings(&window, string(CONF_PATH), string(TITLE)),
+	mainMenu(&settings, string(TITLE)),
+	light(&preWindow)
 {
-
+	Torch::light = &light;
 }
 
 Game::~Game()
@@ -16,9 +18,9 @@ void Game::run()
 	sf::Thread thread(&renderThread, this);
     thread.launch();
 
-	while(window.isOpen())
-		update();
-
+	while(game)
+		while(window.isOpen())
+			update();
 	thread.wait();
 }
 
@@ -31,6 +33,8 @@ void Game::events()
 		sf::Vector2u size(event.size.width, event.size.height);
 		window.setView(sf::View({0, 0, (float)size.x, (float)size.y}));
 		mainMenu.resize();
+		uint wmax = max(size.x, size.y);
+		preWindow.create(wmax, wmax);
 	}
 	else
 	{
@@ -46,20 +50,30 @@ void Game::events()
 
 void Game::update()
 {
-
+	switch(state)
+	{
+		case GAME:
+			world.update();
+		break;
+		case MENU:
+			break;
+	};
 }
 
 void Game::draw()
 {
 	switch(state)
 	{
+		case GAME:
+		{
+			preWindow.draw(world);
+			preWindow.display();
+			window.draw(light);
+		} break;
 		case MENU:
 			window.draw(mainMenu);
 			break;
-		case GAME:
-			window.draw(world);
-			break;
-	};
+	}
 }
 
 void Game::renderThread(Game* game)
@@ -71,7 +85,9 @@ void Game::renderThread(Game* game)
 			game->events();
 
 		game->window.clear();
+		game->preWindow.clear();
 		game->draw();
 		game->window.display();
 	}
+	game->game = false;
 }

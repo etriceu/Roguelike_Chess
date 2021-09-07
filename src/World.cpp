@@ -6,6 +6,7 @@ World::World()
 	: vertices(sf::Quads)
 {
 	tileset = textures(TEX_PATH);
+	Torch::clock = &clock;
 }
 
 void World::newMap()
@@ -14,6 +15,8 @@ void World::newMap()
 
 	fill_n(*tiles, SIZE, Tile());
 	vertices.clear();
+	Torch::light->clear();
+	torches.clear();
 	vector <sf::IntRect> rooms;
 
 	for(int x = 2; x < WIDTH-1; x++)
@@ -44,7 +47,10 @@ void World::newMap()
 
 	buildRooms(rooms);
 	if(buildTunnels(rooms) && fixTiles())
+	{
+		addObjects(rooms);
 		updateMap();
+	}
 	else
 		newMap();
 }
@@ -54,6 +60,11 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	states.transform *= getTransform();
 	states.texture = tileset;
 	target.draw(vertices, states);
+	for(auto t : torches)
+	{
+		t.draw(&target, 0);
+		t.draw(&target, 1);
+	}
 }
 
 void World::buildRooms(vector<sf::IntRect> rooms)
@@ -76,6 +87,33 @@ void World::buildRooms(vector<sf::IntRect> rooms)
 		}
 	}
 }
+
+void World::addObjects(vector<sf::IntRect> rooms)
+{
+	for(auto r : rooms)
+	{
+		vector <sf::Vector2i> pos;
+		for(int n = 0, num = rand()%(MAX_TORCH+1); n < num; n++)
+		{
+			sf::Vector2i p = {rand()%(r.width-2)+r.left+1, rand()%(r.height-2)+r.top+1};
+			bool valid = true;
+			for(auto pp : pos)
+				if(pp == p)
+				{
+					n--;
+					valid = false;
+				}
+
+			if(valid)
+			{
+				pos.push_back(p);
+				torches.push_back(Torch(sf::Vector2f(p.x*TILE_SIZE, p.y*TILE_SIZE)));
+			}
+		}
+	}
+	Torch::light->apply();
+}
+
 
 bool World::setTunnelFloor(int x, int y, sf::IntRect r1, sf::IntRect r2)
 {
@@ -268,4 +306,10 @@ void World::updateMap()
 			for(int n = 0; n < 4; n++)
 				vertices.append(quad[n]);
 		}
+}
+
+void World::update()
+{
+	for(Torch &t : torches)
+		t.update();
 }
