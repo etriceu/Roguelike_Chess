@@ -24,12 +24,10 @@ private:
 	Settings settings;
 	MainMenu mainMenu;
 	World world;
-	Light light;
 	State state = MENU;
 	bool game = true;
 
 	sf::RenderWindow window;
-	sf::RenderTexture preWindow;
 	sf::Event event;
 };
 

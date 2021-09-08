@@ -2,8 +2,9 @@
 #define WORLD_HPP_INCLUDED
 
 #include "Torch.hpp"
+#include "Player.hpp"
 
-class World : public sf::Drawable, public sf::Transformable
+class World
 {
 	enum Tiles{EMPTY, FLOOR, FLOORX=20, WALL};
 	static const int WIDTH = 105;
@@ -19,9 +20,12 @@ public:
 	World();
     void newMap();
 	void update();
+	void draw(sf::RenderTarget& target);
+	void movePlayer(char dir);
+
+	Player player;
 
 private:
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	void buildRooms(vector <sf::IntRect> rooms);
 	bool setTunnelFloor(int x, int y, sf::IntRect r1, sf::IntRect r2);
 	bool buildTunnels(vector <sf::IntRect> rooms);
@@ -31,8 +35,10 @@ private:
 
     sf::Texture *tileset;
 	sf::VertexArray vertices;
+	sf::RenderTexture preWindow;
 
 	vector <Torch> torches;
+	Light light;
 	sf::Clock clock;
 
 	static const int SIZE = WIDTH*HEIGHT;

@@ -2,10 +2,9 @@
 
 Game::Game()
 	: settings(&window, string(CONF_PATH), string(TITLE)),
-	mainMenu(&settings, string(TITLE)),
-	light(&preWindow)
+	mainMenu(&settings, string(TITLE))
 {
-	Torch::light = &light;
+
 }
 
 Game::~Game()
@@ -33,18 +32,22 @@ void Game::events()
 		sf::Vector2u size(event.size.width, event.size.height);
 		window.setView(sf::View({0, 0, (float)size.x, (float)size.y}));
 		mainMenu.resize();
-		uint wmax = max(size.x, size.y);
-		preWindow.create(wmax, wmax);
 	}
 	else
 	{
 		if(state == MENU && mainMenu.event(event) == MainMenu::NEW)
 		{
+			sf::View view = window.getView();
+			view.zoom(0.5);
+			window.setView(view);
 			world.newMap();
 			state = GAME;
 		}
 		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
+		{
+			window.setView(window.getDefaultView());
 			state = MENU;
+		}
 	}
 }
 
@@ -66,9 +69,10 @@ void Game::draw()
 	{
 		case GAME:
 		{
-			preWindow.draw(world);
-			preWindow.display();
-			window.draw(light);
+			sf::View view = window.getView();
+			view.setCenter(world.player.getPosition());
+			window.setView(view);
+			world.draw(window);
 		} break;
 		case MENU:
 			window.draw(mainMenu);
@@ -85,9 +89,17 @@ void Game::renderThread(Game* game)
 			game->events();
 
 		game->window.clear();
-		game->preWindow.clear();
 		game->draw();
 		game->window.display();
+
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+			game->world.movePlayer(Player::LEFT);
+		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			game->world.movePlayer(Player::RIGHT);
+		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+			game->world.movePlayer(Player::UP);
+		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+			game->world.movePlayer(Player::DOWN);
 	}
 	game->game = false;
 }

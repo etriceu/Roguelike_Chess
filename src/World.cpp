@@ -3,10 +3,13 @@
 #include <algorithm>
 
 World::World()
-	: vertices(sf::Quads)
+	: player(TILE_SIZE), vertices(sf::Quads), light(&preWindow)
 {
 	tileset = textures(TEX_PATH);
 	Torch::clock = &clock;
+	Torch::light = &light;
+	int wmax = max(WIDTH, HEIGHT)*TILE_SIZE;
+	preWindow.create(wmax, wmax);
 }
 
 void World::newMap()
@@ -55,16 +58,23 @@ void World::newMap()
 		newMap();
 }
 
-void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void World::draw(sf::RenderTarget& target)
 {
-	states.transform *= getTransform();
+	sf::RenderStates states;
 	states.texture = tileset;
-	target.draw(vertices, states);
+	preWindow.clear();
+
+	preWindow.draw(vertices, states);
 	for(auto t : torches)
-	{
-		t.draw(&target, 0);
-		t.draw(&target, 1);
-	}
+		t.draw(&preWindow, 1);
+
+	preWindow.draw(player);
+
+	for(auto t : torches)
+		t.draw(&preWindow, 0);
+
+	preWindow.display();
+	target.draw(light);
 }
 
 void World::buildRooms(vector<sf::IntRect> rooms)
@@ -112,6 +122,9 @@ void World::addObjects(vector<sf::IntRect> rooms)
 		}
 	}
 	Torch::light->apply();
+
+	sf::IntRect r = rooms.back();
+	player.setPosition(r.left+r.width/2, r.top+r.height/2);
 }
 
 
@@ -312,4 +325,18 @@ void World::update()
 {
 	for(Torch &t : torches)
 		t.update();
+
+	player.update();
+}
+
+void World::movePlayer(char dir)
+{
+	if(dir == Player::LEFT && tiles[player.x-1][player.y].type == FLOOR)
+		player.move(dir);
+	else if(dir == Player::RIGHT && tiles[player.x+1][player.y].type == FLOOR)
+		player.move(dir);
+	else if(dir == Player::UP && tiles[player.x][player.y-1].type == FLOOR)
+		player.move(dir);
+	else if(dir == Player::DOWN && tiles[player.x][player.y+1].type == FLOOR)
+		player.move(dir);
 }
