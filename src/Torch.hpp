@@ -19,7 +19,6 @@ public:
 	Torch(sf::Vector2f pos);
 	void update();
 	void draw(sf::RenderTarget *target, bool layer);
-	void updateLight(sf::RenderWindow *w);
 
 	static Light *light;
 	static sf::Clock *clock;
