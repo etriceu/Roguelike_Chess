@@ -11,3 +11,6 @@ make
 # Info
 The game uses SFML and requires shader support.
 The project is under development.
+
+# Screenshots
+![image](https://user-images.githubusercontent.com/58367136/132690156-d814e925-fb61-4626-a23d-5b44a52d1bcd.png)
