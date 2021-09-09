@@ -7,6 +7,7 @@ MapGenerator::MapGenerator(sf::RenderTexture *preWindow)
 {
 	tileset = textures(TEX_PATH);
 	Torch::light = &light;
+	Crystal::light = &light;
 }
 
 void MapGenerator::newMap()
@@ -17,6 +18,7 @@ void MapGenerator::newMap()
 	vertices.clear();
 	Torch::light->clear();
 	torches.clear();
+	crystals.clear();
 	vector <sf::IntRect> rooms;
 
 	for(int x = 2; x < WIDTH-1; x++)
@@ -80,13 +82,20 @@ void MapGenerator::addObjects(vector<sf::IntRect> rooms)
 {
 	for(auto r : rooms)
 	{
-		vector <sf::Vector2i> pos;
-		for(int n = 0, num = rand()%(MAX_TORCH+1); n < num; n++)
+		vector <sf::Vector2i> objects;
+		bool type = true;
+		int num = rand()%(MAX_TORCH+1);
+		if(num == 0)
 		{
-			sf::Vector2i p = {rand()%(r.width-2)+r.left+1, rand()%(r.height-2)+r.top+1};
+			type = false;
+			num = rand()%MAX_CRYSTAL+1;
+		}
+		for(int n = 0; n < num; n++)
+		{
+			sf::Vector2i pos = {rand()%(r.width-2)+r.left+1, rand()%(r.height-2)+r.top+1};
 			bool valid = true;
-			for(auto pp : pos)
-				if(pp == p)
+			for(auto pp : objects)
+				if(pp == pos)
 				{
 					n--;
 					valid = false;
@@ -94,12 +103,16 @@ void MapGenerator::addObjects(vector<sf::IntRect> rooms)
 
 			if(valid)
 			{
-				pos.push_back(p);
-				torches.push_back(Torch(sf::Vector2f(p.x*TILE_SIZE, p.y*TILE_SIZE)));
+				objects.push_back(pos);
+				sf::Vector2f p = sf::Vector2f(pos.x*TILE_SIZE, pos.y*TILE_SIZE);
+				if(type)
+					torches.push_back(Torch(p));
+				else
+					crystals.push_back(Crystal(p));
 			}
 		}
 	}
-	Torch::light->apply();
+	light.apply();
 
 	sf::IntRect r = rooms.back();
 	player.setPosition(r.left+r.width/2, r.top+r.height/2);

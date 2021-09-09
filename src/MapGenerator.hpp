@@ -3,6 +3,7 @@
 
 #include "Torch.hpp"
 #include "Player.hpp"
+#include "Crystal.hpp"
 
 class MapGenerator
 {
@@ -16,6 +17,7 @@ protected:
 	const float ROOM_CHANCE = 0.02;
 
 	const int MAX_TORCH = 2;
+	const int MAX_CRYSTAL = 3;
 
 public:
 	MapGenerator(sf::RenderTexture *preWindow);
@@ -35,6 +37,7 @@ protected:
 	sf::VertexArray vertices;
 
 	vector <Torch> torches;
+	vector <Crystal> crystals;
 	Light light;
 
 	static const int SIZE = WIDTH*HEIGHT;

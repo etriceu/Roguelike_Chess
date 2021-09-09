@@ -17,6 +17,9 @@ void World::draw(sf::RenderTarget& target)
 	preWindow.clear();
 
 	preWindow.draw(vertices, states);
+	for(auto c : crystals)
+		preWindow.draw(c);
+
 	for(auto t : torches)
 		t.draw(&preWindow, 1);
 
