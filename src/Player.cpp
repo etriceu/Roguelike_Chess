@@ -8,8 +8,8 @@ Player::Player(int tileSize)
 
 void Player::update()
 {
-	if(dir != NONE && (x*TILE_SIZE != getPosition().x ||
-		y*TILE_SIZE-TILE_SIZE/3 != getPosition().y))
+	if(dir != NONE && (x*TILE_SIZE != getPosition().x) !=
+		(y*TILE_SIZE-TILE_SIZE/3 != getPosition().y))
 	{
 		if(walk.getElapsedTime().asSeconds() >= 1/WALK_SPEED)
 		{
