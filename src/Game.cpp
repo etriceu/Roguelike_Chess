@@ -33,20 +33,33 @@ void Game::events()
 		window.setView(sf::View({0, 0, (float)size.x, (float)size.y}));
 		mainMenu.resize();
 	}
+	else if(event.type == sf::Event::GainedFocus)
+		isActive = true;
+	else if(event.type == sf::Event::LostFocus)
+		isActive = false;
 	else
 	{
-		if(state == MENU && mainMenu.event(event) == MainMenu::NEW)
+		char retState = state == MENU ? mainMenu.event(event) : 0;
+
+		if(retState == MainMenu::NEW || retState == MainMenu::BACK2GAME)
 		{
 			sf::View view = window.getView();
 			view.zoom(0.5);
 			window.setView(view);
-			world.newMap();
+			if(retState == MainMenu::NEW)
+				world.newMap();
+
 			state = GAME;
 		}
-		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
+		else if(state == GAME)
 		{
-			window.setView(window.getDefaultView());
-			state = MENU;
+			auto key = Control::controls.find(event.key.code);
+			if(event.type == sf::Event::KeyPressed &&
+				key != Control::controls.end() && key->second == Control::ESC)
+			{
+				window.setView(window.getDefaultView());
+				state = MENU;
+			}
 		}
 	}
 }
@@ -92,14 +105,13 @@ void Game::renderThread(Game* game)
 		game->draw();
 		game->window.display();
 
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-			game->world.movePlayer(Player::LEFT);
-		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-			game->world.movePlayer(Player::RIGHT);
-		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-			game->world.movePlayer(Player::UP);
-		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-			game->world.movePlayer(Player::DOWN);
+		if(game->state == GAME && game->isActive)
+			for(auto c : Control::controls)
+				if(sf::Keyboard::isKeyPressed(c.first))
+				{
+					game->world.movePlayer(c.second);
+					break;
+				}
 	}
 	game->game = false;
 }

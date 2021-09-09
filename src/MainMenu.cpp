@@ -76,24 +76,33 @@ int MainMenu::event(sf::Event e)
 	if(e.type == sf::Event::KeyPressed)
 	{
 		menu[state][current].setFillColor(IN_ACT_COLOR);
+		auto key = Control::controls.find(e.key.code);
+		if(key != Control::controls.end())
+		{
+			if(key->second == Control::ENTER || key->second == Control::RIGHT)
+				ret = funcs[state][current](this, NEXT);
+			else if(key->second == Control::LEFT)
+				ret = funcs[state][current](this, PREVIOUS);
+			else if(key->second == Control::UP)
+				current--;
+			else if(key->second == Control::DOWN)
+				current++;
+			else if(key->second == Control::ESC)
+			{
+				current = 0;
+				if(state != MAIN)
+					state = MAIN;
+				else if(swapped)
+					return BACK2GAME;
+			}
 
-		if(e.key.code == sf::Keyboard::Enter || e.key.code == sf::Keyboard::D ||
-			e.key.code == sf::Keyboard::Right)
-			ret = funcs[state][current](this, NEXT);
-		else if(e.key.code == sf::Keyboard::A || e.key.code == sf::Keyboard::Left)
-			ret = funcs[state][current](this, PREVIOUS);
-		else if(e.key.code == sf::Keyboard::W || e.key.code == sf::Keyboard::Up)
-			current--;
-		else if(e.key.code == sf::Keyboard::S || e.key.code == sf::Keyboard::Down)
-			current++;
-
-		if(current < 0)
-			current = menu[state].size()-1;
-		else if(current > (int)menu[state].size()-1)
-			current = 0;
-
-		menu[state][current].setFillColor(ACT_COLOR);
+			if(current < 0)
+				current = menu[state].size()-1;
+			else if(current > (int)menu[state].size()-1)
+				current = 0;
+		}
 	}
+	menu[state][current].setFillColor(ACT_COLOR);
 	return ret;
 }
 

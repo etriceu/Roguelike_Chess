@@ -3,6 +3,7 @@
 
 #include "Resources.hpp"
 #include "Settings.hpp"
+#include "Controls.hpp"
 
 class MainMenu : public sf::Drawable
 {
@@ -23,7 +24,7 @@ class MainMenu : public sf::Drawable
 	};
 
 public:
-	enum {NEW = 1, LOAD};
+	enum {NEW = 1, LOAD, BACK2GAME};
 	MainMenu(Settings *settings, string title);
 	void resize();
 	int event(sf::Event e);

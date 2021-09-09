@@ -26,6 +26,7 @@ private:
 	World world;
 	State state = MENU;
 	bool game = true;
+	bool isActive = true;
 
 	sf::RenderWindow window;
 	sf::Event event;
