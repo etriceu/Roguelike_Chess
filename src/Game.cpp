@@ -19,7 +19,15 @@ void Game::run()
 
 	while(game)
 		while(window.isOpen())
-			update();
+		{
+			if(clock.getElapsedTime().asSeconds() >= tickTime.asSeconds())
+			{
+				update();
+				clock.restart();
+			}
+			else
+				sf::sleep(sf::microseconds(10));
+		}
 	thread.wait();
 }
 
@@ -32,6 +40,10 @@ void Game::events()
 		sf::Vector2u size(event.size.width, event.size.height);
 		window.setView(sf::View({0, 0, (float)size.x, (float)size.y}));
 		mainMenu.resize();
+		if(settings.maxFPS)
+			tickTime = sf::seconds(1.f/max((int)settings.maxFPS, TICK_PER_SEC));
+		else
+			tickTime = sf::seconds(0);
 	}
 	else if(event.type == sf::Event::GainedFocus)
 		isActive = true;
