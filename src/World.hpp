@@ -15,6 +15,8 @@ public:
 private:
 	sf::RenderTexture preWindow;
 	sf::Clock clock;
+
+	bool playerLayer;
 };
 
 #endif // WORLD_HPP_INCLUDED

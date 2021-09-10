@@ -20,13 +20,14 @@ void World::draw(sf::RenderTarget& target)
 	for(auto c : crystals)
 		preWindow.draw(c);
 
-	for(auto t : torches)
-		t.draw(&preWindow, 1);
-
-	preWindow.draw(player);
+	if(playerLayer)
+		preWindow.draw(player);
 
 	for(auto t : torches)
-		t.draw(&preWindow, 0);
+		preWindow.draw(t);
+
+	if(!playerLayer)
+		preWindow.draw(player);
 
 	preWindow.display();
 	target.draw(light);
@@ -50,4 +51,13 @@ void World::movePlayer(char dir)
 		player.move(dir);
 	else if(dir == Player::DOWN && tiles[player.x][player.y+1].type == FLOOR)
 		player.move(dir);
+
+	playerLayer = 0;
+	for(auto t : torches)
+		if(t.getPosition().x/TILE_SIZE == player.x &&
+			t.getPosition().y/TILE_SIZE == player.y)
+		{
+			playerLayer = 1;
+			break;
+		}
 }
