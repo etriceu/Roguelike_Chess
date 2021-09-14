@@ -18,16 +18,10 @@ public:
 	{
 		size_t s = res.size();
 		T *r = &res[name];
-		if(s != res.size())
+		if(s != res.size() && !custom && !r->loadFromFile(name))
 		{
-			if(!custom && !r->loadFromFile(name))
-			{
-				log("Unable to open file: %s\n", name.c_str());
-				return nullptr;
-			}
-
-			if(typeid(T) == typeid(sf::Texture))
-				sf::Texture *tx = (sf::Texture*)r;
+			log("Unable to open file: %s\n", name.c_str());
+			return nullptr;
 		}
 		return r;
 	}
