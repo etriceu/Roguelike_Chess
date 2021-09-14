@@ -1,0 +1,9 @@
+king & enemyKing:
+	Author: Charles Gabriel (Antifarea)
+	License: CC-BY 3.0
+	Source: https://opengameart.org/content/twelve-more-characters-3-free-characters-and-a-child-template
+
+lowLevelEnemy & highLevelEnemy:
+	Author: Charles Gabriel (Antifarea)
+	License: CC-BY 3.0
+	Source: https://opengameart.org/content/twelve-more-16x18-rpg-character-sprites

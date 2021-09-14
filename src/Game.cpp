@@ -95,7 +95,7 @@ void Game::draw()
 		case GAME:
 		{
 			sf::View view = window.getView();
-			view.setCenter(world.player.getPosition());
+			view.setCenter(world.getPlayer()->getPosition());
 			window.setView(view);
 			world.draw(window);
 		} break;
@@ -117,13 +117,8 @@ void Game::renderThread(Game* game)
 		game->draw();
 		game->window.display();
 
-		if(game->state == GAME && game->isActive)
-			for(auto c : Control::controls)
-				if(sf::Keyboard::isKeyPressed(c.first))
-				{
-					game->world.movePlayer(c.second);
-					break;
-				}
+		if(game->isActive && game->state == GAME)
+			game->world.getPlayer()->control();
 	}
 	game->game = false;
 }

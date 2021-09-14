@@ -3,10 +3,9 @@
 #include <algorithm>
 
 MapGenerator::MapGenerator(sf::RenderTexture *preWindow)
-	: player(TILE_SIZE), vertices(sf::Quads), light(preWindow)
+	: vertices(sf::Quads), light(preWindow)
 {
 	tileset = textures(TEX_PATH);
-	Torch::light = &light;
 	Crystal::light = &light;
 }
 
@@ -16,10 +15,10 @@ void MapGenerator::newMap()
 
 	fill_n(*tiles, SIZE, Tile());
 	vertices.clear();
-	Torch::light->clear();
-	torches.clear();
 	crystals.clear();
-	vector <sf::IntRect> rooms;
+	rooms.clear();
+	light.clear();
+	vector<sf::IntRect> buf;
 
 	for(int x = 2; x < WIDTH-1; x++)
 		for(int y = 2; y < HEIGHT-1; y++)
@@ -30,7 +29,7 @@ void MapGenerator::newMap()
 				if(x+w+2 < WIDTH && y+h+MARGIN < HEIGHT)
 				{
 					bool intersects = false;
-					for(sf::IntRect r : rooms)
+					for(sf::IntRect r : buf)
 					{
 						r.top -= MARGIN;
 						r.left -= MARGIN;
@@ -43,24 +42,25 @@ void MapGenerator::newMap()
 						}
 					}
 					if(!intersects)
-						rooms.push_back({x, y, w, h});
+					{
+						rooms[{x, y, w, h}];
+						buf.push_back({x, y, w, h});
+					}
 				}
 			}
 
-	buildRooms(rooms);
-	if(buildTunnels(rooms) && fixTiles())
-	{
-		addObjects(rooms);
+	buildRooms();
+	if(buildTunnels(buf) && fixTiles())
 		updateMap();
-	}
 	else
 		newMap();
 }
 
-void MapGenerator::buildRooms(vector<sf::IntRect> rooms)
+void MapGenerator::buildRooms()
 {
-	for(sf::IntRect &r : rooms)
+	for(auto it : rooms)
 	{
+		sf::IntRect r = it.first;
 		for(int x = r.left; x < r.left+r.width; x++)
 			for(int y = r.top; y < r.top+r.height; y++)
 				tiles[x][y].type = FLOOR;
@@ -77,47 +77,6 @@ void MapGenerator::buildRooms(vector<sf::IntRect> rooms)
 		}
 	}
 }
-
-void MapGenerator::addObjects(vector<sf::IntRect> rooms)
-{
-	for(auto r : rooms)
-	{
-		vector <sf::Vector2i> objects;
-		bool type = true;
-		int num = rand()%(MAX_TORCH+1);
-		if(num == 0)
-		{
-			type = false;
-			num = rand()%MAX_CRYSTAL+1;
-		}
-		for(int n = 0; n < num; n++)
-		{
-			sf::Vector2i pos = {rand()%(r.width-2)+r.left+1, rand()%(r.height-2)+r.top+1};
-			bool valid = true;
-			for(auto pp : objects)
-				if(pp == pos)
-				{
-					n--;
-					valid = false;
-				}
-
-			if(valid)
-			{
-				objects.push_back(pos);
-				sf::Vector2f p = sf::Vector2f(pos.x*TILE_SIZE, pos.y*TILE_SIZE);
-				if(type)
-					torches.push_back(Torch(p));
-				else
-					crystals.push_back(Crystal(p));
-			}
-		}
-	}
-	light.apply();
-
-	sf::IntRect r = rooms.back();
-	player.setPosition(r.left+r.width/2, r.top+r.height/2);
-}
-
 
 bool MapGenerator::setTunnelFloor(int x, int y, sf::IntRect r1, sf::IntRect r2)
 {
@@ -136,7 +95,7 @@ bool MapGenerator::setTunnelFloor(int x, int y, sf::IntRect r1, sf::IntRect r2)
 bool MapGenerator::buildTunnels(vector<sf::IntRect> rooms)
 {
 	int res = 0;
-	vector<sf::IntRect> buf = rooms;
+
 	while(rooms.size() && !res)
 	{
 		sf::IntRect r1 = rooms.back(), r2 = {-1, 0, 0, 0};
