@@ -1,10 +1,9 @@
 #include "Game.hpp"
 
 Game::Game()
-	: settings(&window, string(CONF_PATH), string(TITLE)),
-	mainMenu(&settings, string(TITLE))
+	: mainMenu(string(TITLE))
 {
-
+	settings.init(&window, string(CONF_PATH), string(TITLE));
 }
 
 Game::~Game()
@@ -107,7 +106,7 @@ void Game::draw()
 
 void Game::renderThread(Game* game)
 {
-	game->settings.apply();
+	settings.apply();
 	while(game->window.isOpen())
     {
 		while(game->window.pollEvent(game->event))

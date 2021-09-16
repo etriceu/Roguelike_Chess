@@ -21,6 +21,7 @@ public:
 	Object* move(char dir);
 	void setPosition(int x, int y);
 
+	char moveDir = NONE;
 	sf::IntRect room;
 	enum Direction{NONE = -1, LEFT, RIGHT, UP, DOWN};
 
@@ -29,7 +30,6 @@ public:
 private:
 	void setFrame(char frame);
 
-	char dir = NONE;
 	char standDir;
 	char anim;
 	sf::Clock walk, walkAnim;

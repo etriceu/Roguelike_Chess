@@ -4,8 +4,7 @@
 
 using namespace std;
 
-MainMenu::MainMenu(Settings *settings, string title)
-	: settings(settings)
+MainMenu::MainMenu(string title)
 {
 	sf::Font *font = fonts(string(FONT_PATH));
 	this->title.setFont(*font);
@@ -23,11 +22,15 @@ MainMenu::MainMenu(Settings *settings, string title)
 	menu[MAIN].pop_back();
 	menu[MAIN][current].setFillColor(ACT_COLOR);
 	functions();
+
+	clickSound.setBuffer(*sounds(string(SOUND_PATH)));
+	clickSound.setRelativeToListener(true);
+	settings.addSound(&clickSound);
 }
 
 void MainMenu::resize()
 {
-	sf::Vector2u size(settings->mode.width, settings->mode.height);
+	sf::Vector2u size(settings.mode.width, settings.mode.height);
 	title.setPosition((size.x-title.getLocalBounds().width)/2,
 					 (size.y-title.getLocalBounds().height)/13);
 
@@ -68,6 +71,7 @@ int MainMenu::event(sf::Event e)
 			if(r.left <= m.x && r.left+r.width >= m.x &&
 				r.top <= m.y && r.top+r.height >= m.y)
 			{
+				clickSound.play();
 				ret = funcs[state][n](this, NEXT);
 				break;
 			}
@@ -80,9 +84,15 @@ int MainMenu::event(sf::Event e)
 		if(key != Control::controls.end())
 		{
 			if(key->second == Control::ENTER || key->second == Control::RIGHT)
+			{
+				clickSound.play();
 				ret = funcs[state][current](this, NEXT);
+			}
 			else if(key->second == Control::LEFT)
+			{
+				clickSound.play();
 				ret = funcs[state][current](this, PREVIOUS);
+			}
 			else if(key->second == Control::UP)
 				current--;
 			else if(key->second == Control::DOWN)

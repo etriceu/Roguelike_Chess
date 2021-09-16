@@ -22,7 +22,6 @@ private:
 	void draw();
 	static void renderThread(Game *game);
 
-	Settings settings;
 	MainMenu mainMenu;
 	World world;
 	State state = MENU;

@@ -19,6 +19,19 @@ Torch::Torch(sf::Vector2i pos)
 	setTextureRect({frame*FWIDTH, 0, FWIDTH, FHEIGHT});
 
 	type = TORCH;
+
+	fireSound.setBuffer(*sounds(string(SOUND_PATH)));
+	settings.addSound(&fireSound);
+	fireSound.setPosition(pos.x, 0, pos.y);
+	fireSound.setMinDistance(MIN_DIST);
+	fireSound.setAttenuation(ATTENUATE);
+	fireSound.setLoop(true);
+	fireSound.play();
+}
+
+Torch::~Torch()
+{
+	settings.removeSound(&fireSound);
 }
 
 void Torch::update()

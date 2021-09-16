@@ -7,6 +7,33 @@ Player::Player()
 	setTexture(*textures(TEX_PATH));
 	type = PLAYER;
 	collidable = true;
+
+	string path = WALK_SOUND_PATH;
+	for(int n = 0; n < STEPS; n++)
+	{
+		path[path.size()-5] = n+49;
+		steps[n].setBuffer(*sounds(path));
+		steps[n].setRelativeToListener(true);
+		settings.addSound(&steps[n]);
+	}
+}
+
+void Player::update()
+{
+	if(moveDir != NONE)
+	{
+		bool step = false;
+		for(auto &s : steps)
+			if(s.getStatus() == sf::SoundSource::Playing)
+			{
+				step = true;
+				break;
+			}
+		if(!step)
+			steps[rand()%STEPS].play();
+	}
+	sf::Listener::setPosition(getPosition().x, 0.f, getPosition().y);
+	Actor::update();
 }
 
 void Player::control()

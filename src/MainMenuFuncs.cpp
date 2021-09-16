@@ -23,7 +23,7 @@ void MainMenu::functions()
 			{
 				it->current = 0;
 				it->state = SETTINGS;
-				it->tmpSett = *it->settings;
+				it->tmpSett = settings;
 				for(size_t n = 0; n < it->menu[SETTINGS].size()-2; n++)
 					it->funcs[SETTINGS][n](it, NONE);
 				return 0;
@@ -86,11 +86,30 @@ void MainMenu::functions()
 				it->resize();
 				return 0;
 			},
+			[](MainMenu* it, int n)
+			{
+				if(n == NEXT && it->tmpSett.soundEffects < 100)
+					it->tmpSett.soundEffects++;
+				else if(n == PREVIOUS && it->tmpSett.soundEffects > 0)
+					it->tmpSett.soundEffects--;
+
+				it->clickSound.setVolume(it->tmpSett.soundEffects);
+
+				it->menu[SETTINGS][4].setString(it->TEXT[SETTINGS][4] +
+					to_string(it->tmpSett.soundEffects) + "%");
+
+				if(it->tmpSett.soundEffects == 0)
+					it->menu[SETTINGS][4].setString(it->TEXT[SETTINGS][4] +
+					"I hate this shit");
+
+				it->resize();
+				return 0;
+			},
 			[](MainMenu* it, int)
 			{
-				*it->settings = it->tmpSett;
-				it->settings->apply();
-				it->settings->save();
+				settings = it->tmpSett;
+				settings.apply();
+				settings.save();
 				return 0;
 			},
 			[](MainMenu* it, int){it->current = 0; it->state = MAIN; return 0;}

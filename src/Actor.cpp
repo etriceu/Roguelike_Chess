@@ -3,12 +3,12 @@
 MapGenerator* Actor::map;
 void Actor::update()
 {
-	if(dir != NONE && (x*map->TILE_SIZE != getPosition().x) !=
+	if(moveDir != NONE && (x*map->TILE_SIZE != getPosition().x) !=
 		(y*map->TILE_SIZE-map->TILE_SIZE/3 != getPosition().y))
 	{
 		if(walk.getElapsedTime().asSeconds() >= 1/WALK_SPEED)
 		{
-			switch(dir)
+			switch(moveDir)
 			{
 				case LEFT: Object::move(-1, 0); break;
 				case RIGHT: Object::move(1, 0); break;
@@ -19,14 +19,14 @@ void Actor::update()
 		}
 	}
 	else
-		dir = NONE;
+		moveDir = NONE;
 
 	if(walkAnim.getElapsedTime().asMilliseconds() >= WALK_TIME)
 	{
-		if(dir != NONE)
+		if(moveDir != NONE)
 		{
-			setFrame(WALK[dir][anim]);
-			anim = (anim+1)%WALK[dir].size();
+			setFrame(WALK[moveDir][anim]);
+			anim = (anim+1)%WALK[moveDir].size();
 		}
 		else
 		{
@@ -37,17 +37,17 @@ void Actor::update()
 	}
 }
 
-Object* Actor::move(char dir)
+Object* Actor::move(char moveDir)
 {
-	if(this->dir != NONE)
+	if(this->moveDir != NONE)
 		return nullptr;
 
 	int oldx = x, oldy = y;
 
-	if(dir == LEFT && map->tiles[x-1][y].type == map->FLOOR)		x--;
-	else if(dir == RIGHT && map->tiles[x+1][y].type == map->FLOOR)	x++;
-	else if(dir == UP && map->tiles[x][y-1].type == map->FLOOR)		y--;
-	else if(dir == DOWN && map->tiles[x][y+1].type == map->FLOOR)	y++;
+	if(moveDir == LEFT && map->tiles[x-1][y].type == map->FLOOR)		x--;
+	else if(moveDir == RIGHT && map->tiles[x+1][y].type == map->FLOOR)	x++;
+	else if(moveDir == UP && map->tiles[x][y-1].type == map->FLOOR)		y--;
+	else if(moveDir == DOWN && map->tiles[x][y+1].type == map->FLOOR)	y++;
 
 	if(x != oldx || y != oldy)
 	{
@@ -76,8 +76,8 @@ Object* Actor::move(char dir)
 					break;
 				}
 
-		standDir = dir;
-		this->dir = dir;
+		standDir = moveDir;
+		this->moveDir = moveDir;
 
 		sort(it->second.begin(), it->second.end(),
 			[](const Object *l, const Object *r)
