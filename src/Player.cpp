@@ -6,6 +6,7 @@ Player::Player()
 {
 	setTexture(*textures(TEX_PATH));
 	type = PLAYER;
+	collidable = true;
 }
 
 void Player::control()

@@ -23,7 +23,6 @@ public:
 
 	static Light *light;
 	static sf::Clock *clock;
-	static int TILE_SIZE;
 
 private:
 	static sf::Texture *tx;

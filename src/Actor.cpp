@@ -53,7 +53,7 @@ Object* Actor::move(char dir)
 	{
 		auto it = map->rooms.find(room);
 		for(auto obj : it->second)
-			if(obj != this && x == obj->x && y == obj->y && obj->type != TORCH)
+			if(obj != this && x == obj->x && y == obj->y && obj->collidable)
 			{
 				x = oldx;
 				y = oldy;
@@ -82,7 +82,8 @@ Object* Actor::move(char dir)
 		sort(it->second.begin(), it->second.end(),
 			[](const Object *l, const Object *r)
 			{
-				return l->y < r->y || (l->y == r->y && l->type != TORCH);
+				return l->y < r->y || (l->y == r->y &&
+					(l->type != TORCH && r->type != CRYSTAL));
 			});
 	}
 	return nullptr;

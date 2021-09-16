@@ -7,6 +7,7 @@ Enemy::Enemy(u_int lvl)
 
 	setTexture(*textures(TEX_PATH[lvl]));
 	type = ENEMY;
+	collidable = true;
 }
 
 void Enemy::move()
@@ -15,10 +16,12 @@ void Enemy::move()
 	for(auto obj : map->rooms[room])
 		if(obj->type == PLAYER && room.contains(obj->x, obj->y))
 		{
-			if(obj->x < x) Actor::move(LEFT);
-			else if(obj->x > x) Actor::move(RIGHT);
-			else if(obj->y > y) Actor::move(DOWN);
-			else if(obj->y < y) Actor::move(UP);
+			int r = x != obj->x && y != obj->y ? rand()%2 : x != obj->x;
+			if(r)
+				Actor::move(obj->x < x ? LEFT : RIGHT);
+			else
+				Actor::move(obj->y < y ? UP : DOWN);
+
 			isPlayer = true;
 			break;
 		}

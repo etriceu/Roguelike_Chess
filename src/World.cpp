@@ -9,8 +9,8 @@ World::World()
 	preWindow.create(wmax, wmax);
 	Torch::clock = &clock;
 	Torch::light = &light;
-	Torch::TILE_SIZE = TILE_SIZE;
 	Actor::map = this;
+	Crystal::light = &light;
 	player = new Player();
 }
 
@@ -27,9 +27,6 @@ void World::draw(sf::RenderTarget& target)
 	preWindow.clear();
 
 	preWindow.draw(vertices, states);
-
-	for(auto c : crystals)
-		preWindow.draw(c);
 
 	for(auto it : rooms)
 		for(auto obj : it.second)
@@ -53,6 +50,8 @@ void World::update()
 					break;
 				case Object::PLAYER:
 					static_cast<Player*>(obj)->update();
+				default:
+					break;
 			}
 }
 
@@ -70,7 +69,7 @@ void World::newMap()
 
 void World::addObjects()
 {
-	for(auto it : rooms)
+	for(auto &it : rooms)
 	{
 		sf::IntRect r = it.first;
 		vector <sf::Vector2i> objects;
@@ -98,7 +97,7 @@ void World::addObjects()
 				if(type)
 					rooms[r].push_back(new Torch({pos.x, pos.y}));
 				else
-					crystals.push_back(Crystal({(float)pos.x*TILE_SIZE, (float)pos.y*TILE_SIZE}));
+					rooms[r].push_back(new Crystal({pos.x, pos.y}));
 			}
 		}
 	}
@@ -119,6 +118,23 @@ void World::addObjects()
 			e->setPosition(r.left+r.width/2, r.top+r.height/2);
 			e->room = r;
 		}
+
+	for(auto &it : rooms)
+	{
+		sf::IntRect r = it.first;
+		int num = rand()%MAX_OBSTACLES;
+		for(int n = 0; n < num; n++)
+		{
+			sf::Vector2i pos = {rand()%(r.width-2)+r.left+1, rand()%(r.height-2)+r.top+1};
+			bool valid = true;
+			for(auto pp : it.second)
+				if(pp->x == pos.x && pp->y == pos.y)
+					valid = false;
+
+			if(valid)
+				rooms[r].push_back(new Obstacle({pos.x, pos.y}));
+		}
+	}
 }
 
 void World::destroyObjects()
@@ -132,6 +148,9 @@ void World::destroyObjects()
 					break;
 				case Object::ENEMY:
 					delete static_cast<Enemy*>(obj);
+					break;
+				case Object::OBSTACLE:
+					delete static_cast<Obstacle*>(obj);
 					break;
 				case Object::PLAYER:
 				default:

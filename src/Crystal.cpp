@@ -4,22 +4,20 @@
 sf::Texture *Crystal::tx = textures(string(Crystal::TEX_PATH));
 Light *Crystal::light;
 
-Crystal::Crystal(sf::Vector2f pos)
+Crystal::Crystal(sf::Vector2i pos)
 {
-	quad = sf::VertexArray(sf::Quads, 4);
+	x = pos.x;
+	y = pos.y;
+	pos.x *= TILE_SIZE;
+	pos.y *= TILE_SIZE;
+	int frame = rand()/(RAND_MAX+1.0)*(tx->getSize().x/FSIZE);
 
-	quad[0].position = pos + sf::Vector2f(0, FSIZE);
-	quad[1].position = pos;
-	quad[2].position = pos + sf::Vector2f(FSIZE, 0);
-	quad[3].position = pos + sf::Vector2f(FSIZE, FSIZE);
+	setTexture(*tx);
+	setPosition(pos.x, pos.y);
 
-	float frame = rand()/(RAND_MAX+1.0)*(tx->getSize().x/FSIZE);
-	frame = floor(frame);
+	setTextureRect({frame*FSIZE, 0, FSIZE, FSIZE});
 
-	quad[0].texCoords = {frame*FSIZE, FSIZE};
-	quad[1].texCoords = {frame*FSIZE, 0};
-	quad[2].texCoords = {(frame+1)*FSIZE, 0};
-	quad[3].texCoords = {(frame+1)*FSIZE, FSIZE};
+	type = CRYSTAL;
 
 	light->addLight({pos.x+LOFFSET.x, pos.y+LOFFSET.y},
 					color(rand()/(RAND_MAX+1.0)), LBRIGHT, LRADIUS);
@@ -48,10 +46,4 @@ sf::Color Crystal::color(double h)
 	b *= 255;
 
 	return sf::Color(r, g, b);
-}
-
-void Crystal::draw(sf::RenderTarget &target, sf::RenderStates states) const
-{
-	//states.texture = tx;
-	target.draw(quad, tx);
 }

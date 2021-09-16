@@ -1,8 +1,9 @@
 #ifndef MAP_GENERATOR_HPP_INCLUDED
 #define MAP_GENERATOR_HPP_INCLUDED
 
-#include "Crystal.hpp"
+#include "Resources.hpp"
 #include "Object.hpp"
+#include "Light.hpp"
 
 class MapGenerator
 {
@@ -23,8 +24,10 @@ protected:
 	const float RANDOM_FLOOR = 0.1;
 	const float ROOM_CHANCE = 0.02;
 
-	const int MAX_TORCH = 2;
-	const int MAX_CRYSTAL = 3;
+	const int ROOM_MIN_WIDTH = 6;
+	const int ROOM_MIN_HEIGHT = 7;
+	const int ROOM_RAND_WIDTH = 3;
+	const int ROOM_RAND_HEIGHT = 3;
 
 public:
 	MapGenerator(sf::RenderTexture *preWindow);
@@ -43,7 +46,6 @@ protected:
     sf::Texture *tileset;
 	sf::VertexArray vertices;
 
-	vector <Crystal> crystals;
 	Light light;
 
 	static const int SIZE = WIDTH*HEIGHT;

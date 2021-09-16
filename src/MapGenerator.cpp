@@ -6,7 +6,7 @@ MapGenerator::MapGenerator(sf::RenderTexture *preWindow)
 	: vertices(sf::Quads), light(preWindow)
 {
 	tileset = textures(TEX_PATH);
-	Crystal::light = &light;
+	Object::TILE_SIZE = TILE_SIZE;
 }
 
 void MapGenerator::newMap()
@@ -15,7 +15,6 @@ void MapGenerator::newMap()
 
 	fill_n(*tiles, SIZE, Tile());
 	vertices.clear();
-	crystals.clear();
 	rooms.clear();
 	light.clear();
 	vector<sf::IntRect> buf;
@@ -24,8 +23,8 @@ void MapGenerator::newMap()
 		for(int y = 2; y < HEIGHT-1; y++)
 			if(rand()/(RAND_MAX+1.0) <= ROOM_CHANCE)
 			{
-				int w = 8;
-				int h = 8;
+				int w = ROOM_MIN_WIDTH + rand()%ROOM_RAND_WIDTH;
+				int h = ROOM_MIN_HEIGHT + rand()%ROOM_RAND_HEIGHT;
 				if(x+w+2 < WIDTH && y+h+MARGIN < HEIGHT)
 				{
 					bool intersects = false;

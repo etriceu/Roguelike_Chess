@@ -6,9 +6,11 @@
 class Object : public sf::Sprite
 {
 public:
-	enum Type {TORCH, ENEMY, PLAYER};
+	enum Type {TORCH, ENEMY, PLAYER, CRYSTAL, OBSTACLE};
 	Type type;
 	int x, y;
+	bool collidable = false;
+	inline static int TILE_SIZE;
 };
 
 #endif // OBJECT_HPP_INCLUDED

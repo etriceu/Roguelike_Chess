@@ -3,7 +3,6 @@
 sf::Texture *Torch::tx = textures(string(Torch::TEX_PATH));
 Light *Torch::light;
 sf::Clock *Torch::clock;
-int Torch::TILE_SIZE;
 
 Torch::Torch(sf::Vector2i pos)
 {
