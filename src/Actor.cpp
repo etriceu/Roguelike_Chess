@@ -85,6 +85,8 @@ Object* Actor::move(char moveDir)
 				return l->y < r->y || (l->y == r->y &&
 					(l->type != TORCH && r->type != CRYSTAL));
 			});
+
+		return this;
 	}
 	return nullptr;
 }

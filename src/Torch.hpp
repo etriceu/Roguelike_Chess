@@ -12,7 +12,7 @@ class Torch : public Object
 	static constexpr string_view TEX_PATH = "Graphics/torch.png";
 	static constexpr float LBRIGHT = 1.8f;
 	static constexpr float LRADIUS = 0.05f;
-	static constexpr struct{float x, y;} LOFFSET = {8.f, -2.f};
+	static constexpr struct{float x, y;} OFFSET = {8.f, 14.f};
 	static const uint32_t LCOLOR = 0xffdb6400;
 	static const int FRAMES = 6;
 	static const int FWIDTH = 16;

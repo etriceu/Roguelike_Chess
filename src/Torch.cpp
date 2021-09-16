@@ -14,7 +14,7 @@ Torch::Torch(sf::Vector2i pos)
 
 	setTexture(*tx);
 	setPosition(pos.x, pos.y);
-	light->addLight({pos.x+LOFFSET.x, pos.y+LOFFSET.y}, sf::Color(LCOLOR), LBRIGHT, LRADIUS);
+	light->addLight({pos.x+OFFSET.x, pos.y+OFFSET.y}, sf::Color(LCOLOR), LBRIGHT, LRADIUS);
 
 	setTextureRect({frame*FWIDTH, 0, FWIDTH, FHEIGHT});
 
@@ -22,7 +22,7 @@ Torch::Torch(sf::Vector2i pos)
 
 	fireSound.setBuffer(*sounds(string(SOUND_PATH)));
 	settings.addSound(&fireSound);
-	fireSound.setPosition(pos.x, 0, pos.y);
+	fireSound.setPosition(pos.x+OFFSET.x, 0, pos.y+OFFSET.y);
 	fireSound.setMinDistance(MIN_DIST);
 	fireSound.setAttenuation(ATTENUATE);
 	fireSound.setLoop(true);

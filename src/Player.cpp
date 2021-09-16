@@ -41,12 +41,13 @@ void Player::control()
 	for(auto c : Control::controls)
 		if(sf::Keyboard::isKeyPressed(c.first))
 		{
-			move(c.second);
-			for(auto &it : map->rooms)
-				for(auto &obj : it.second)
-					if(obj->type == ENEMY)
-						static_cast<Enemy*>(obj)->move();
-
+			if(move(c.second) != nullptr)
+			{
+				for(auto &it : map->rooms)
+					for(auto &obj : it.second)
+						if(obj->type == ENEMY)
+							static_cast<Enemy*>(obj)->move();
+			}
 			break;
 		}
 }

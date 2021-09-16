@@ -26,7 +26,7 @@ void Enemy::move()
 			break;
 		}
 
-	if(!isPlayer)
+	if(!isPlayer && rand()%100 < RAND_MOVE_CHANCE)
 	{
 		int dir = rand()%4;
 		if(dir == LEFT && room.contains(x-1, y)) Actor::move(dir);
