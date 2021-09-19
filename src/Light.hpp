@@ -6,7 +6,7 @@
 
 class Light : public sf::Drawable
 {
-	static constexpr int MAX_LIGHTS = 64;
+	static constexpr int MAX_LIGHTS = 96;
 	static constexpr int WIDTH = 1680;
 public:
 	Light(sf::RenderTexture *preWindow);

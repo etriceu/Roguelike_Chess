@@ -1,4 +1,4 @@
-#define SIZE 64
+#define SIZE 96
 uniform sampler2D texture;
 uniform vec3 ambient;
 uniform int size;
