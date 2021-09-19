@@ -14,6 +14,8 @@ void Actor::update()
 				case RIGHT: Object::move(1, 0); break;
 				case UP: Object::move(0, -1); break;
 				case DOWN: Object::move(0, 1);
+				default:
+					break;
 			}
 			walk.restart();
 		}
@@ -26,7 +28,7 @@ void Actor::update()
 		if(moveDir != NONE)
 		{
 			setFrame(WALK[moveDir][anim]);
-			anim = (anim+1)%WALK[moveDir].size();
+			anim = (anim+1)%LEN(WALK[moveDir]);
 		}
 		else
 		{
@@ -37,7 +39,7 @@ void Actor::update()
 	}
 }
 
-Object* Actor::move(char moveDir)
+Object* Actor::move(Direction moveDir)
 {
 	if(this->moveDir != NONE)
 		return nullptr;
@@ -100,7 +102,7 @@ void Actor::setPosition(int x, int y)
 	standDir = DOWN;
 }
 
-void Actor::setFrame(char frame)
+void Actor::setFrame(int frame)
 {
 	int x = getTexture()->getSize().x/WIDTH;
 	setTextureRect({frame%x*WIDTH, frame/x*HEIGHT, WIDTH, HEIGHT});

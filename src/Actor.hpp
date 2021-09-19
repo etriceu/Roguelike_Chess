@@ -6,32 +6,34 @@
 class Actor : public Object
 {
 protected:
-	const int WIDTH = 16;
-	const int HEIGHT = 18;
+	static constexpr int WIDTH = 16;
+	static constexpr int HEIGHT = 18;
 
-	const float WALK_SPEED = 100; // px/s
-	const char DEFAULT_FRAME = 7;
-	const int WALK_TIME = 75;
-	const vector <char> STAND = {10, 4, 1, 7};
-	const vector <vector<char>> WALK = {
+	static constexpr float WALK_SPEED = 100; // px/s
+	static constexpr int DEFAULT_FRAME = 7;
+	static constexpr int WALK_TIME = 75;
+	static constexpr int STAND[4] = {10, 4, 1, 7};
+	static constexpr int WALK[4][4] = {
 		{9, 10, 11, 10}, {3, 4, 5, 4}, {0, 1, 2, 1}, {6, 7, 8, 7}};
 
 public:
 	void update();
-	Object* move(char dir);
+
+	enum Direction{NONE = -1, LEFT, RIGHT, UP, DOWN};
+
+	Object* move(Direction dir);
 	void setPosition(int x, int y);
 
-	char moveDir = NONE;
+	Direction moveDir = NONE;
 	sf::IntRect room;
-	enum Direction{NONE = -1, LEFT, RIGHT, UP, DOWN};
 
 	static MapGenerator *map;
 
 private:
-	void setFrame(char frame);
+	void setFrame(int frame);
 
-	char standDir;
-	char anim;
+	int standDir;
+	int anim;
 	sf::Clock walk, walkAnim;
 };
 

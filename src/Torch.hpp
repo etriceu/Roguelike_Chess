@@ -13,11 +13,11 @@ class Torch : public Object
 	static constexpr float LBRIGHT = 1.8f;
 	static constexpr float LRADIUS = 0.05f;
 	static constexpr struct{float x, y;} OFFSET = {8.f, 14.f};
-	static const uint32_t LCOLOR = 0xffdb6400;
-	static const int FRAMES = 6;
-	static const int FWIDTH = 16;
-	static const int FHEIGHT = 32;
-	static const int FTIME = 100;
+	static constexpr int32_t LCOLOR = 0xffdb6400;
+	static constexpr int FRAMES = 6;
+	static constexpr int FWIDTH = 16;
+	static constexpr int FHEIGHT = 32;
+	static constexpr int FTIME = 100;
 
 	static constexpr float MIN_DIST = 48.f;
 	static constexpr float ATTENUATE = 20.f;

@@ -10,7 +10,7 @@ class Crystal : public Object
 	static constexpr string_view TEX_PATH = "Graphics/crystals.png";
 	static constexpr float LBRIGHT = 0.5f;
 	static constexpr float LRADIUS = 0.02f;
-	static const int FSIZE = 16;
+	static constexpr int FSIZE = 16;
 	static constexpr struct{float x, y;} LOFFSET = {FSIZE/2, FSIZE/2};
 
 public:

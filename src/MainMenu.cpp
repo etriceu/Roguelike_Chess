@@ -6,7 +6,7 @@ using namespace std;
 
 MainMenu::MainMenu(string title)
 {
-	sf::Font *font = fonts(string(FONT_PATH));
+	sf::Font *font = fonts(FONT_PATH);
 	this->title.setFont(*font);
 	this->title.setString(title);
 	this->title.setCharacterSize(TITLE_SIZE);
@@ -23,7 +23,7 @@ MainMenu::MainMenu(string title)
 	menu[MAIN][current].setFillColor(ACT_COLOR);
 	functions();
 
-	clickSound.setBuffer(*sounds(string(SOUND_PATH)));
+	clickSound.setBuffer(*sounds(SOUND_PATH));
 	clickSound.setRelativeToListener(true);
 	settings.addSound(&clickSound);
 }

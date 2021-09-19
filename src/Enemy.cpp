@@ -2,10 +2,10 @@
 
 Enemy::Enemy(u_int lvl)
 {
-	if(lvl < TEX_PATH.size())
+	if(lvl < LEN(TEX_PATH))
 		lvl = 0;
 
-	setTexture(*textures(TEX_PATH[lvl]));
+	setTexture(*textures(string(TEX_PATH[lvl])));
 	type = ENEMY;
 	collidable = true;
 }
@@ -28,10 +28,11 @@ void Enemy::move()
 
 	if(!isPlayer && rand()%100 < RAND_MOVE_CHANCE)
 	{
-		int dir = rand()%4;
-		if(dir == LEFT && room.contains(x-1, y)) Actor::move(dir);
-		else if(dir == RIGHT && room.contains(x+1, y)) Actor::move(dir);
-		else if(dir == UP && room.contains(x, y-1)) Actor::move(dir);
-		else if(dir == DOWN && room.contains(x, y+1)) Actor::move(dir);
+		constexpr Direction dir[4] = {LEFT, RIGHT, UP, DOWN};
+		int r = rand()%4;
+		if(dir[r] == LEFT && room.contains(x-1, y)) Actor::move(dir[r]);
+		else if(dir[r] == RIGHT && room.contains(x+1, y)) Actor::move(dir[r]);
+		else if(dir[r] == UP && room.contains(x, y-1)) Actor::move(dir[r]);
+		else if(dir[r] == DOWN && room.contains(x, y+1)) Actor::move(dir[r]);
 	}
 }

@@ -1,9 +1,9 @@
 #include "Game.hpp"
 
 Game::Game()
-	: mainMenu(string(TITLE))
+	: mainMenu(TITLE)
 {
-	settings.init(&window, string(CONF_PATH), string(TITLE));
+	settings.init(&window, CONF_PATH, TITLE);
 }
 
 Game::~Game()

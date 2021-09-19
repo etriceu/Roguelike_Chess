@@ -7,8 +7,8 @@
 class Game
 {
 	const int TICK_PER_SEC = 200;
-	const string_view TITLE = "Roguelike Chess";
-	const string_view CONF_PATH = "config.cfg";
+	const string TITLE = "Roguelike Chess";
+	const string CONF_PATH = "config.cfg";
 	enum State {MENU, GAME};
 
 public:

@@ -41,7 +41,7 @@ void Player::control()
 	for(auto c : Control::controls)
 		if(sf::Keyboard::isKeyPressed(c.first))
 		{
-			if(move(c.second) != nullptr)
+			if(move((Direction)c.second) != nullptr)
 			{
 				for(auto &it : map->rooms)
 					for(auto &obj : it.second)

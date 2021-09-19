@@ -6,6 +6,7 @@
 
 using namespace std;
 
+#define LEN(arr) ((size_t) (sizeof(arr)/sizeof(arr)[0]))
 #define LOG_FILE "log.txt"
 
 inline void clearLog()

@@ -6,8 +6,8 @@
 class Obstacle : public Object
 {
 	static constexpr string_view TEX_PATH = "Graphics/obstacles.png";
-	static const int FWIDTH = 16;
-	static const int FHEIGHT = 18;
+	static constexpr int FWIDTH = 16;
+	static constexpr int FHEIGHT = 18;
 	static constexpr struct{float x, y;} OFFSET = {0, -2};
 
 public:
