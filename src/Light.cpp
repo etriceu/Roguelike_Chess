@@ -24,7 +24,7 @@ Light::Light(sf::RenderTexture *preWindow)
 
 bool Light::addLight(sf::Vector2f pos, sf::Color color, float bright, float radius)
 {
-	if(colors.size() >= MAX_LIGHTS)
+	if(colors.size() >= MAX_LIGHTS-1)
 		return false;
 
 	sf::Vector2u ws = rt->getSize();
@@ -33,8 +33,26 @@ bool Light::addLight(sf::Vector2f pos, sf::Color color, float bright, float radi
 	return true;
 }
 
+void Light::setPlayerLight(sf::Color color, float bright)
+{
+	sf::Vector2u ws = rt->getSize();
+	playerColor = {color.r/255.f, color.g/255.f, color.b/255.f, bright};
+}
+
+void Light::setPlayerLightPos(sf::Vector2f pos, float radius)
+{
+	sf::Vector2u ws = rt->getSize();
+	playerCircle = {pos.x/ws.x, (ws.y-pos.y)/ws.y, radius*WIDTH/ws.x};
+	if(circles.size() > 0)
+		circles[0] = playerCircle;
+	shader.setUniformArray("circle", circles.data(), 1);
+}
+
 void Light::apply()
 {
+	circles.insert(circles.begin(), playerCircle);//reserved for the player
+	colors.insert(colors.begin(), playerColor);
+
 	int size = colors.size();
 	shader.setUniform("size", size);
 	shader.setUniformArray("color", colors.data(), size);

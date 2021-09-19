@@ -43,6 +43,10 @@ void Game::events()
 			tickTime = sf::seconds(1.f/max((int)settings.maxFPS, TICK_PER_SEC));
 		else
 			tickTime = sf::seconds(0);
+
+		UIView = window.getDefaultView();
+		gameView = UIView;
+		gameView.zoom(0.5);
 	}
 	else if(event.type == sf::Event::GainedFocus)
 		isActive = true;
@@ -54,9 +58,6 @@ void Game::events()
 
 		if(retState == MainMenu::NEW || retState == MainMenu::BACK2GAME)
 		{
-			sf::View view = window.getView();
-			view.zoom(0.5);
-			window.setView(view);
 			if(retState == MainMenu::NEW)
 				world.newMap();
 
@@ -68,7 +69,6 @@ void Game::events()
 			if(event.type == sf::Event::KeyPressed &&
 				key != Control::controls.end() && key->second == Control::ESC)
 			{
-				window.setView(window.getDefaultView());
 				state = MENU;
 			}
 		}
@@ -93,9 +93,8 @@ void Game::draw()
 	{
 		case GAME:
 		{
-			sf::View view = window.getView();
-			view.setCenter(world.getPlayer()->getPosition());
-			window.setView(view);
+			gameView.setCenter(world.getPlayer()->getPosition());
+			window.setView(gameView);
 			world.draw(window);
 		} break;
 		case MENU:
@@ -114,10 +113,15 @@ void Game::renderThread(Game* game)
 
 		game->window.clear();
 		game->draw();
-		game->window.display();
 
 		if(game->isActive && game->state == GAME)
+		{
 			game->world.getPlayer()->control();
+			game->window.setView(game->UIView);
+			game->world.getPlayer()->drawUI(game->window);
+		}
+
+		game->window.display();
 	}
 	game->game = false;
 }

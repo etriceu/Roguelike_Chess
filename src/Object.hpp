@@ -6,7 +6,7 @@
 class Object : public sf::Sprite
 {
 public:
-	enum Type {TORCH, ENEMY, PLAYER, CRYSTAL, OBSTACLE};
+	enum Type {TORCH, ENEMY, PLAYER, CRYSTAL, OBSTACLE, ARTIFACT};
 	Type type;
 	int x, y;
 	bool collidable = false;

@@ -66,13 +66,7 @@ Object* Actor::move(Direction moveDir)
 			for(auto &r : map->rooms)
 				if(r.first.contains(x, y))
 				{
-					for(size_t n = 0; n < it->second.size(); n++)
-						if(it->second[n] == this)
-						{
-							it->second.erase(it->second.begin()+n);
-							break;
-						}
-
+					it->second.remove(this);
 					room = r.first;
 					r.second.push_back(this);
 					break;
@@ -81,7 +75,7 @@ Object* Actor::move(Direction moveDir)
 		standDir = moveDir;
 		this->moveDir = moveDir;
 
-		sort(it->second.begin(), it->second.end(),
+		it->second.sort(
 			[](const Object *l, const Object *r)
 			{
 				return l->y < r->y || (l->y == r->y &&

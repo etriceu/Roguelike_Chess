@@ -22,6 +22,8 @@ private:
 	void draw();
 	static void renderThread(Game *game);
 
+	sf::View gameView, UIView;
+
 	MainMenu mainMenu;
 	World world;
 	State state = MENU;

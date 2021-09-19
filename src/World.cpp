@@ -11,6 +11,7 @@ World::World()
 	Torch::light = &light;
 	Actor::map = this;
 	Crystal::light = &light;
+	Player::light = &light;
 	player = new Player();
 }
 
@@ -67,42 +68,26 @@ void World::newMap()
 	addObjects();
 }
 
+sf::Vector2i World::getValidPosition(const pair<sf::IntRect, list<Object*>> &it)
+{
+	sf::IntRect r = it.first;
+	sf::Vector2i pos;
+	bool valid;
+	do
+	{
+		valid = true;
+		pos = {rand()%(r.width-2)+r.left+1, rand()%(r.height-2)+r.top+1};
+		for(auto pp : it.second)
+			if(pp->x == pos.x && pp->y == pos.y)
+				valid = false;
+
+	}while(!valid);
+
+	return pos;
+}
+
 void World::addObjects()
 {
-	for(auto &it : rooms)
-	{
-		sf::IntRect r = it.first;
-		vector <sf::Vector2i> objects;
-		bool type = true;
-		int num = rand()%(MAX_TORCH+1);
-		if(num == 0)
-		{
-			type = false;
-			num = rand()%MAX_CRYSTAL+1;
-		}
-		for(int n = 0; n < num; n++)
-		{
-			sf::Vector2i pos = {rand()%(r.width-2)+r.left+1, rand()%(r.height-2)+r.top+1};
-			bool valid = true;
-			for(auto pp : objects)
-				if(pp == pos)
-				{
-					n--;
-					valid = false;
-				}
-
-			if(valid)
-			{
-				objects.push_back(pos);
-				if(type)
-					rooms[r].push_back(new Torch({pos.x, pos.y}));
-				else
-					rooms[r].push_back(new Crystal({pos.x, pos.y}));
-			}
-		}
-	}
-	light.apply();
-
 	sf::IntRect r = rooms.begin()->first;
 	Player *p = getPlayer();
 	p->setPosition(r.left+r.width/2, r.top+r.height/2);
@@ -121,20 +106,27 @@ void World::addObjects()
 
 	for(auto &it : rooms)
 	{
-		sf::IntRect r = it.first;
-		int num = rand()%MAX_OBSTACLES;
-		for(int n = 0; n < num; n++)
-		{
-			sf::Vector2i pos = {rand()%(r.width-2)+r.left+1, rand()%(r.height-2)+r.top+1};
-			bool valid = true;
-			for(auto pp : it.second)
-				if(pp->x == pos.x && pp->y == pos.y)
-					valid = false;
+		int torchNum = rand()%(MAX_TORCH+1);
+		for(int n = torchNum; n > 0; n--)
+			it.second.push_back(new Torch(getValidPosition(it)));
 
-			if(valid)
-				rooms[r].push_back(new Obstacle({pos.x, pos.y}));
-		}
+		for(int n = rand()%MAX_CRYSTAL+1; n > 0 && !torchNum; n--)
+			it.second.push_back(new Crystal(getValidPosition(it)));
+
+		for(int n = rand()%MAX_OBSTACLES; n > 0; n--)
+			it.second.push_back(new Obstacle(getValidPosition(it)));
 	}
+
+	if(rand()/(RAND_MAX+1.0) <= ARTIFACT_CHANCE)
+	{
+		auto it = rooms.begin();
+		advance(it, rand() % rooms.size());
+		it->second.push_back(
+			new Artifact(getValidPosition({it->first, it->second}),
+				static_cast<Artifact::ArtType>(rand()%Artifact::ART_NUM)));
+	}
+
+	light.apply();
 }
 
 void World::destroyObjects()
@@ -151,6 +143,9 @@ void World::destroyObjects()
 					break;
 				case Object::OBSTACLE:
 					delete static_cast<Obstacle*>(obj);
+					break;
+				case Object::ARTIFACT:
+					delete static_cast<Artifact*>(obj);
 					break;
 				case Object::PLAYER:
 				default:

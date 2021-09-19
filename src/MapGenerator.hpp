@@ -4,9 +4,11 @@
 #include "Resources.hpp"
 #include "Object.hpp"
 #include "Light.hpp"
+#include <list>
 
 class MapGenerator
 {
+protected:
 	struct compRooms
 	{
 		bool operator()(const sf::IntRect& l, const sf::IntRect& r) const
@@ -15,7 +17,6 @@ class MapGenerator
 		}
 	};
 
-protected:
 	enum Tiles{EMPTY, FLOOR, FLOORX=20, WALL};
 	static const int WIDTH = 105;
 	static const int HEIGHT = 64;
@@ -33,7 +34,7 @@ public:
 	MapGenerator(sf::RenderTexture *preWindow);
 
 	Object *player;
-	map <sf::IntRect, vector<Object*>, compRooms> rooms;
+	map <sf::IntRect, list<Object*>, compRooms> rooms;
 
 protected:
 	void newMap();
