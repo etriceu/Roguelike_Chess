@@ -21,7 +21,6 @@ protected:
 	static const int WIDTH = 105;
 	static const int HEIGHT = 64;
 	const string TEX_PATH = "Graphics/tiles.png";
-	const int TILE_SIZE = 16;
 	const float RANDOM_FLOOR = 0.1;
 	const float ROOM_CHANCE = 0.02;
 
@@ -35,6 +34,7 @@ public:
 
 	Object *player;
 	map <sf::IntRect, list<Object*>, compRooms> rooms;
+	const int TILE_SIZE = 16;
 
 protected:
 	void newMap();

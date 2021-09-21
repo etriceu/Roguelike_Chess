@@ -9,7 +9,7 @@ Torch::Torch(sf::Vector2i pos)
 	x = pos.x;
 	y = pos.y;
 	pos.x *= TILE_SIZE;
-	pos.y *= TILE_SIZE;
+	pos.y = (pos.y-1)*TILE_SIZE;
 	frame = rand()%FRAMES;
 
 	setTexture(*tx);

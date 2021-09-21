@@ -13,7 +13,7 @@ class World : public MapGenerator
 	const int MAX_CRYSTAL = 3;
 	const int MAX_TORCH = 2;
 	const int MAX_OBSTACLES = 3;
-	const float ARTIFACT_CHANCE = 200.0;
+	const float ARTIFACT_CHANCE = 10.0;
 public:
 	World();
 	~World();
@@ -23,7 +23,7 @@ public:
 	Player* getPlayer();
 
 private:
-	sf::Vector2i getValidPosition(const pair<sf::IntRect, list<Object*>> &it);
+	sf::Vector2i getValidPosition(const pair<sf::IntRect, list<Object*>> &it, bool collidable = false);
 	void addObjects();
 	void destroyObjects();
 

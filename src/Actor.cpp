@@ -78,8 +78,9 @@ Object* Actor::move(Direction moveDir)
 		it->second.sort(
 			[](const Object *l, const Object *r)
 			{
-				return l->y < r->y || (l->y == r->y &&
-					(l->type != TORCH && r->type != CRYSTAL));
+				return l->y < r->y ||
+					((l->y == r->y-1 || l->y == r->y) && l->type == TORCH) ||
+					(l->y == r->y && l->type == CRYSTAL);
 			});
 
 		return this;

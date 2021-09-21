@@ -2,6 +2,8 @@
 #include "Controls.hpp"
 #include "Enemy.hpp"
 
+#include <cmath>
+
 Light *Player::light;
 Player::Player()
 {
@@ -65,7 +67,7 @@ void Player::update()
 	sf::Listener::setPosition(getPosition().x, 0.f, getPosition().y);
 	Actor::update();
 	light->setPlayerLightPos({getPosition().x+OFFSET.x, getPosition().y+OFFSET.y},
-							 lantern ? LRADIUS : -1);
+							 enabled_artifacts[Artifact::LANTERN] ? LRADIUS : -1);
 }
 
 void Player::control()
@@ -73,46 +75,40 @@ void Player::control()
 	for(auto c : Control::controls)
 		if(sf::Keyboard::isKeyPressed(c.first))
 		{
-			Object *obj = move((Direction)c.second);
-			if(obj != nullptr)
+			Object *obj = nullptr;
+			if(!fight)
 			{
-				for(auto &it : map->rooms)
-					for(auto &obj : it.second)
-						if(obj->type == ENEMY)
-							static_cast<Enemy*>(obj)->move();
+				obj = move((Direction)c.second);
+				Object *e = nullptr;
+				if(obj != nullptr)
+				{
+					for(auto &it : map->rooms)
+						for(auto &o : it.second)
+							if(o->type == ENEMY)
+							{
+								Object *buf = static_cast<Enemy*>(o)->move();
+								if(buf != nullptr && buf->type == PLAYER)
+									obj = o;
+							}
+				}
 			}
-			else
+			if(obj == nullptr)
 				break;
 
-			if(obj->type == ARTIFACT)
+			if(obj->type == ENEMY)
+			{
+				setPosition(ceil(room.left+(room.width-1)/2), room.top+room.height-1);
+				fight = true;
+			}
+			else if(obj->type == ARTIFACT)
 			{
 				Artifact *a = static_cast<Artifact*>(obj);
 				map->rooms[room].remove(obj);
-				if(a->artId == Artifact::LANTERN && !lantern)
+				if(!enabled_artifacts[a->artId])
 				{
-					info[0].setString("WOW! You found a lantern.");
-					info[1].setString("Now everyone can see you in the dark ;)");
-					lantern = true;
-				} else if(a->artId == Artifact::HAMMER && !hammer)
-				{
-					info[0].setString("You found the most ordinary hammer.");
-					info[1].setString("Just don't destroy anything.");
-					hammer = true;
-				} else if(a->artId == Artifact::CLOCK && !clock)
-				{
-					info[0].setString("From now on you can go back in time.");
-					info[1].setString("Watch out for time paradoxes or the game will crash.");
-					clock = true;
-				} else if(a->artId == Artifact::FLAG && !flag)
-				{
-					info[0].setString("You found the white flag, the most useless artifact.");
-					info[1].setString("You can save your life by escaping from the battlefield.");
-					flag = true;
-				} else if(a->artId == Artifact::DIPLOMACY && !diplomacy)
-				{
-					info[0].setString("You found a book called \"Diplomacy for the dummies\".");
-					info[1].setString("You can bribe your opponent and run away with your army.");
-					diplomacy = true;
+					info[0].setString(string(Artifact::info[a->artId][0]));
+					info[1].setString(string(Artifact::info[a->artId][1]));
+					enabled_artifacts[a->artId] = true;
 				}
 				for(int n = 0; n < LEN(info); n++)
 					info[n].setPosition(
@@ -130,10 +126,5 @@ void Player::drawUI(sf::RenderTarget& rt)
 {
 	rt.draw(info[0]);
 	rt.draw(info[1]);
-	if(lantern) rt.draw(artifacts[Artifact::LANTERN]);
-	if(hammer) rt.draw(artifacts[Artifact::HAMMER]);
-	if(clock) rt.draw(artifacts[Artifact::CLOCK]);
-	if(flag) rt.draw(artifacts[Artifact::FLAG]);
-	if(diplomacy) rt.draw(artifacts[Artifact::DIPLOMACY]);
 }
 

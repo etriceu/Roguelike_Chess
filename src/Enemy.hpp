@@ -11,7 +11,7 @@ class Enemy : public Actor
 
 public:
 	Enemy(u_int lvl);
-	void move();
+	Object* move();
 };
 
 #endif // ENEMY_HPP_INCLUDED

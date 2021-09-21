@@ -12,13 +12,13 @@ World::World()
 	Actor::map = this;
 	Crystal::light = &light;
 	Player::light = &light;
-	player = new Player();
 }
 
 World::~World()
 {
 	destroyObjects();
-	delete getPlayer();
+	if(player != nullptr)
+		delete player;
 }
 
 void World::draw(sf::RenderTarget& target)
@@ -63,12 +63,15 @@ Player* World::getPlayer()
 
 void World::newMap()
 {
+	if(player != nullptr)
+		delete player;
+	player = new Player();
 	destroyObjects();
 	MapGenerator::newMap();
 	addObjects();
 }
 
-sf::Vector2i World::getValidPosition(const pair<sf::IntRect, list<Object*>> &it)
+sf::Vector2i World::getValidPosition(const pair<sf::IntRect, list<Object*>> &it, bool collidable)
 {
 	sf::IntRect r = it.first;
 	sf::Vector2i pos;
@@ -76,7 +79,12 @@ sf::Vector2i World::getValidPosition(const pair<sf::IntRect, list<Object*>> &it)
 	do
 	{
 		valid = true;
-		pos = {rand()%(r.width-2)+r.left+1, rand()%(r.height-2)+r.top+1};
+
+		if(collidable)
+			pos = {rand()%r.width+r.left, rand()%(r.height-4)+r.top+2};
+		else
+			pos = {rand()%r.width+r.left, rand()%r.height+r.top};
+
 		for(auto pp : it.second)
 			if(pp->x == pos.x && pp->y == pos.y)
 				valid = false;
@@ -104,26 +112,26 @@ void World::addObjects()
 			e->room = r;
 		}
 
-	for(auto &it : rooms)
-	{
-		int torchNum = rand()%(MAX_TORCH+1);
-		for(int n = torchNum; n > 0; n--)
-			it.second.push_back(new Torch(getValidPosition(it)));
-
-		for(int n = rand()%MAX_CRYSTAL+1; n > 0 && !torchNum; n--)
-			it.second.push_back(new Crystal(getValidPosition(it)));
-
-		for(int n = rand()%MAX_OBSTACLES; n > 0; n--)
-			it.second.push_back(new Obstacle(getValidPosition(it)));
-	}
-
 	if(rand()/(RAND_MAX+1.0) <= ARTIFACT_CHANCE)
 	{
 		auto it = rooms.begin();
 		advance(it, rand() % rooms.size());
 		it->second.push_back(
-			new Artifact(getValidPosition({it->first, it->second}),
+			new Artifact(getValidPosition({it->first, it->second}, true),
 				static_cast<Artifact::ArtType>(rand()%Artifact::ART_NUM)));
+	}
+
+	for(auto &it : rooms)
+	{
+		for(int n = rand()%MAX_OBSTACLES; n > 0; n--)
+			it.second.push_back(new Obstacle(getValidPosition(it, true)));
+
+		int torchNum = rand()%(MAX_TORCH+1);
+		for(int n = rand()%MAX_CRYSTAL+1; n > 0 && !torchNum; n--)
+			it.second.push_back(new Crystal(getValidPosition(it)));
+
+		for(int n = torchNum; n > 0; n--)
+			it.second.push_back(new Torch(getValidPosition(it)));
 	}
 
 	light.apply();

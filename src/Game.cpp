@@ -46,7 +46,15 @@ void Game::events()
 
 		UIView = window.getDefaultView();
 		gameView = UIView;
-		gameView.zoom(0.5);
+		for(auto s : SCALES)
+			if(size.y < s.first)
+			{
+				gameView.zoom(s.second);
+				break;
+			}
+
+		fightView = gameView;
+		fightView.zoom(0.5);
 	}
 	else if(event.type == sf::Event::GainedFocus)
 		isActive = true;
@@ -93,8 +101,19 @@ void Game::draw()
 	{
 		case GAME:
 		{
-			gameView.setCenter(world.getPlayer()->getPosition());
-			window.setView(gameView);
+			if(world.getPlayer()->fight)
+			{
+				sf::Rect r = world.getPlayer()->room;
+				fightView.setCenter((r.left+r.width/2)*world.TILE_SIZE,
+							(r.top+r.height/2)*world.TILE_SIZE);
+
+				window.setView(fightView);
+			}
+			else
+			{
+				gameView.setCenter(world.getPlayer()->getPosition());
+				window.setView(gameView);
+			}
 			world.draw(window);
 		} break;
 		case MENU:

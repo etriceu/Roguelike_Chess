@@ -28,6 +28,7 @@ public:
 	void drawUI(sf::RenderTarget &rt);
 
 	static Light *light;
+	bool fight = false;
 
 private:
 	sf::Sound steps[STEPS];
@@ -36,7 +37,7 @@ private:
 	sf::Clock infoClock;
 	sf::Sprite artifacts[Artifact::ART_NUM];
 
-	bool lantern = 0, hammer = 0, clock = 0, flag = 0, diplomacy = 0;
+	bool enabled_artifacts[Artifact::ART_NUM] = {0};
 };
 
 #endif // PLAYER_HPP_INCLUDED

@@ -10,17 +10,18 @@ Enemy::Enemy(u_int lvl)
 	collidable = true;
 }
 
-void Enemy::move()
+Object* Enemy::move()
 {
+	Object *ret = nullptr;
 	bool isPlayer = false;
 	for(auto obj : map->rooms[room])
 		if(obj->type == PLAYER && room.contains(obj->x, obj->y))
 		{
 			int r = x != obj->x && y != obj->y ? rand()%2 : x != obj->x;
 			if(r)
-				Actor::move(obj->x < x ? LEFT : RIGHT);
+				ret = Actor::move(obj->x < x ? LEFT : RIGHT);
 			else
-				Actor::move(obj->y < y ? UP : DOWN);
+				ret = Actor::move(obj->y < y ? UP : DOWN);
 
 			isPlayer = true;
 			break;
@@ -35,4 +36,5 @@ void Enemy::move()
 		else if(dir[r] == UP && room.contains(x, y-1)) Actor::move(dir[r]);
 		else if(dir[r] == DOWN && room.contains(x, y+1)) Actor::move(dir[r]);
 	}
+	return ret;
 }
