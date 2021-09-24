@@ -17,8 +17,6 @@ World::World()
 World::~World()
 {
 	destroyObjects();
-	if(player != nullptr)
-		delete player;
 }
 
 void World::draw(sf::RenderTarget& target)
@@ -41,19 +39,7 @@ void World::update()
 {
 	for(auto it : rooms)
 		for(auto obj : it.second)
-			switch(obj->type)
-			{
-				case Object::TORCH:
-					static_cast<Torch*>(obj)->update();
-					break;
-				case Object::ENEMY:
-					static_cast<Enemy*>(obj)->update();
-					break;
-				case Object::PLAYER:
-					static_cast<Player*>(obj)->update();
-				default:
-					break;
-			}
+			obj->update();
 }
 
 Player* World::getPlayer()
@@ -63,9 +49,6 @@ Player* World::getPlayer()
 
 void World::newMap()
 {
-	if(player != nullptr)
-		delete player;
-	player = new Player();
 	destroyObjects();
 	MapGenerator::newMap();
 	addObjects();
@@ -97,7 +80,8 @@ sf::Vector2i World::getValidPosition(const pair<sf::IntRect, list<Object*>> &it,
 void World::addObjects()
 {
 	sf::IntRect r = rooms.begin()->first;
-	Player *p = getPlayer();
+	Player *p = new Player();
+	player = p;
 	p->setPosition(r.left+r.width/2, r.top+r.height/2);
 	p->room = r;
 	rooms[r].push_back(p);
@@ -118,7 +102,7 @@ void World::addObjects()
 		advance(it, rand() % rooms.size());
 		it->second.push_back(
 			new Artifact(getValidPosition({it->first, it->second}, true),
-				static_cast<Artifact::ArtType>(rand()%Artifact::ART_NUM)));
+				(Artifact::ArtType)(rand()%Artifact::ART_NUM)));
 	}
 
 	for(auto &it : rooms)
@@ -141,24 +125,8 @@ void World::destroyObjects()
 {
 	for(auto it : rooms)
 		for(auto obj : it.second)
-			switch(obj->type)
-			{
-				case Object::TORCH:
-					delete static_cast<Torch*>(obj);
-					break;
-				case Object::ENEMY:
-					delete static_cast<Enemy*>(obj);
-					break;
-				case Object::OBSTACLE:
-					delete static_cast<Obstacle*>(obj);
-					break;
-				case Object::ARTIFACT:
-					delete static_cast<Artifact*>(obj);
-					break;
-				case Object::PLAYER:
-				default:
-					break;
-			}
+			delete obj;
+
 	rooms.clear();
 }
 

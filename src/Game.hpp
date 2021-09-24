@@ -9,7 +9,7 @@ class Game
 	const int TICK_PER_SEC = 200;
 	const string TITLE = "Roguelike Chess";
 	const string CONF_PATH = "config.cfg";
-	const vector<pair<int, float>> SCALES = {
+	const vector<pair<u_int, float>> SCALES = {
 		{480, 0.9}, {768, 0.7}, {1200, 0.5}, {999999, 0.25}};
 	enum State {MENU, GAME};
 

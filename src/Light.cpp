@@ -35,7 +35,6 @@ bool Light::addLight(sf::Vector2f pos, sf::Color color, float bright, float radi
 
 void Light::setPlayerLight(sf::Color color, float bright)
 {
-	sf::Vector2u ws = rt->getSize();
 	playerColor = {color.r/255.f, color.g/255.f, color.b/255.f, bright};
 }
 

@@ -6,6 +6,9 @@
 class Object : public sf::Sprite
 {
 public:
+	virtual ~Object(){};
+	virtual void update(){};
+
 	enum Type {TORCH, ENEMY, PLAYER, CRYSTAL, OBSTACLE, ARTIFACT};
 	Type type;
 	int x, y;

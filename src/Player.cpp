@@ -79,7 +79,6 @@ void Player::control()
 			if(!fight)
 			{
 				obj = move((Direction)c.second);
-				Object *e = nullptr;
 				if(obj != nullptr)
 				{
 					for(auto &it : map->rooms)
@@ -110,7 +109,7 @@ void Player::control()
 					info[1].setString(string(Artifact::info[a->artId][1]));
 					enabled_artifacts[a->artId] = true;
 				}
-				for(int n = 0; n < LEN(info); n++)
+				for(size_t n = 0; n < LEN(info); n++)
 					info[n].setPosition(
 						(settings.mode.width-info[n].getLocalBounds().width)/2,
 						n*info[0].getLocalBounds().height);
