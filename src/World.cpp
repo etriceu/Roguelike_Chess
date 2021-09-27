@@ -64,7 +64,7 @@ sf::Vector2i World::getValidPosition(const pair<sf::IntRect, list<Object*>> &it,
 		valid = true;
 
 		if(collidable)
-			pos = {rand()%r.width+r.left, rand()%(r.height-4)+r.top+2};
+			pos = {rand()%(r.width-2)+r.left+1, rand()%(r.height-4)+r.top+2};
 		else
 			pos = {rand()%r.width+r.left, rand()%r.height+r.top};
 
