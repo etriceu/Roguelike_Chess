@@ -2,7 +2,7 @@
 
 Enemy::Enemy(u_int lvl)
 {
-	if(lvl < LEN(TEX_PATH))
+	if(lvl > MAX_LVL)
 		lvl = 0;
 
 	setTexture(*textures(string(TEX_PATH[lvl])));

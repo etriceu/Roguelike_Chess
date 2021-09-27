@@ -79,20 +79,38 @@ sf::Vector2i World::getValidPosition(const pair<sf::IntRect, list<Object*>> &it,
 
 void World::addObjects()
 {
-	sf::IntRect r = rooms.begin()->first;
+	sf::IntRect pr = (--rooms.end())->first;
 	Player *p = new Player();
 	player = p;
-	p->setPosition(r.left+r.width/2, r.top+r.height/2);
-	p->room = r;
-	rooms[r].push_back(p);
+	p->setPosition(pr.left+pr.width/2, pr.top+pr.height/2);
+	p->room = pr;
+	rooms[pr].push_back(p);
 
+	sf::IntRect br = rooms.begin()->first;
 	for(auto &it : rooms)
-		if(it.first != r)
+		if(it.first != pr && it.first.width == 8)
 		{
-			Enemy *e = new Enemy(0);
-			it.second.push_back(e);
+			br = it.first;
+			break;
+		}
+
+	Enemy *boss = new Enemy(Enemy::MAX_LVL);
+	boss->setPosition(br.left+br.width/2, br.top+br.height/2);
+	boss->room = br;
+	rooms[br].push_back(boss);
+
+	constexpr double MAX_DIST = WIDTH*WIDTH+HEIGHT*HEIGHT;
+	for(auto &it : rooms)
+		if(it.first != pr && it.first != br)
+		{
 			sf::IntRect r = it.first;
-			e->setPosition(r.left+r.width/2, r.top+r.height/2);
+			int x = r.left+r.width/2;
+			int y = r.top+r.height/2;
+			double xx = p->x-x, yy = p->y-y;
+			int lvl = min(round((xx*xx+yy*yy)/MAX_DIST*(Enemy::MAX_LVL+1)), Enemy::MAX_LVL-1.0);
+			Enemy *e = new Enemy(lvl);
+			it.second.push_back(e);
+			e->setPosition(x, y);
 			e->room = r;
 		}
 
