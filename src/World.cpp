@@ -1,6 +1,7 @@
 #include "World.hpp"
 
 #include <algorithm>
+#include <cmath>
 
 World::World()
 	: MapGenerator(&preWindow)
