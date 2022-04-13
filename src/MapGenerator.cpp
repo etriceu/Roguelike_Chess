@@ -2,8 +2,8 @@
 
 #include <algorithm>
 
-MapGenerator::MapGenerator(sf::RenderTexture *preWindow)
-	: vertices(sf::Quads), light(preWindow)
+MapGenerator::MapGenerator()
+	: vertices(sf::Quads), light(TILE_SIZE*WIDTH, TILE_SIZE*HEIGHT)
 {
 	tileset = textures(TEX_PATH);
 	Object::TILE_SIZE = TILE_SIZE;

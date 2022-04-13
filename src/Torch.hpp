@@ -10,7 +10,7 @@ class Torch : public Object
 {
 	static constexpr string_view SOUND_PATH = "Sounds/fire.ogg";
 	static constexpr string_view TEX_PATH = "Graphics/torch.png";
-	static constexpr float LBRIGHT = 1.8f;
+	static constexpr float LBRIGHT = 1.0f;
 	static constexpr float LRADIUS = 0.05f;
 	static constexpr struct{float x, y;} OFFSET = {8.f, 14.f};
 	static constexpr int32_t LCOLOR = 0xffdb6400;

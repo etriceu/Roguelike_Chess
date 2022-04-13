@@ -1,71 +1,73 @@
 #include "Light.hpp"
 #include <cmath>
 
-Light::Light(sf::RenderTexture *preWindow)
+Light::Light(int width, int height)
 {
-	if(!sf::Shader::isAvailable())
+	staticLight.create(width, height, sf::Color(ambient));
+}
+
+void Light::makeLight(sf::Image &img, sf::Vector2f pos, sf::Color color,
+							  float bright, float radius)
+{
+	sf::IntRect r = {max<int>(pos.x-radius, 0), max<int>(pos.y-radius, 0),
+					min<int>(pos.x+radius, img.getSize().x),
+					min<int>(pos.y+radius, img.getSize().y)};
+
+	for(uint x = r.left; x < r.width; x++)
+	for(uint y = r.top; y < r.height; y++)
 	{
-		log("Shader system isn't available\n");
-		exit(0);
+		sf::Color c = img.getPixel(x, y);
+		double xx = pos.x-x;
+		double yy = pos.y-y;
+		double d = sqrt(xx*xx+yy*yy);
+		if(d <= radius)
+		{
+			double l = bright*min(max(1.0-d/radius, 0.0), 1.0);
+			c.r = min(c.r+color.r*l, 255.0);
+			c.g = min(c.g+color.g*l, 255.0);
+			c.b = min(c.b+color.b*l, 255.0);
+			c.a = 255;
+		}
+		img.setPixel(x, y, c);
 	}
-
-	if(!shader.loadFromFile("Shaders/light.frag", sf::Shader::Fragment))
-	{
-		log("Unable to open file: Shaders/light.frag\n");
-		exit(0);
-	}
-
-	shader.setUniform("texture", sf::Shader::CurrentTexture);
-	shader.setUniform("ambient", sf::Glsl::Vec3(0.2, 0.2, 0.2));
-	shader.setUniform("size", 0);
-
-	rt = preWindow;
 }
 
-bool Light::addLight(sf::Vector2f pos, sf::Color color, float bright, float radius)
+void Light::addLight(sf::Vector2f pos, sf::Color color, float bright, float radius)
 {
-	if(colors.size() >= MAX_LIGHTS-1)
-		return false;
-
-	sf::Vector2u ws = rt->getSize();
-	circles.push_back({pos.x/ws.x, (ws.y-pos.y)/ws.y, radius*WIDTH/ws.x});
-	colors.push_back({color.r/255.f, color.g/255.f, color.b/255.f, bright});
-	return true;
+	makeLight(staticLight, pos, color, bright, radius*WIDTH);
 }
 
-void Light::setPlayerLight(sf::Color color, float bright)
+void Light::setPlayerLight(sf::Color color, float bright, float radius)
 {
-	playerColor = {color.r/255.f, color.g/255.f, color.b/255.f, bright};
+	pc = color;
+	pb = bright;
+	pr = radius;
 }
 
-void Light::setPlayerLightPos(sf::Vector2f pos, float radius)
+void Light::setPlayerLightPos(sf::Vector2f pos)
 {
-	sf::Vector2u ws = rt->getSize();
-	playerCircle = {pos.x/ws.x, (ws.y-pos.y)/ws.y, radius*WIDTH/ws.x};
-	if(circles.size() > 0)
-		circles[0] = playerCircle;
-	shader.setUniformArray("circle", circles.data(), 1);
+	if(pos.x < 0)
+		return;
+
+	finalLight = staticLight;
+	makeLight(finalLight, {pos.x, pos.y}, pc, pb, pr*WIDTH);
+	tx.update(finalLight);
 }
 
 void Light::apply()
 {
-	circles.insert(circles.begin(), playerCircle);//reserved for the player
-	colors.insert(colors.begin(), playerColor);
-
-	int size = colors.size();
-	shader.setUniform("size", size);
-	shader.setUniformArray("color", colors.data(), size);
-	shader.setUniformArray("circle", circles.data(), size);
+	finalLight = staticLight;
+	tx.loadFromImage(finalLight);
+	light.setTexture(tx);
+	light.setPosition(0, 0);
 }
 
 void Light::clear()
 {
-	colors.clear();
-	circles.clear();
-	shader.setUniform("size", 0);
+	staticLight.create(staticLight.getSize().x, staticLight.getSize().y, sf::Color(ambient));
 }
 
 void Light::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	target.draw(sf::Sprite(rt->getTexture()), &shader);
+	target.draw(light, sf::BlendMultiply);
 }

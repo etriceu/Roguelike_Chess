@@ -4,10 +4,8 @@
 #include <cmath>
 
 World::World()
-	: MapGenerator(&preWindow)
+	: MapGenerator()
 {
-	int wmax = max(WIDTH, HEIGHT)*TILE_SIZE;
-	preWindow.create(wmax, wmax);
 	Torch::clock = &clock;
 	Torch::light = &light;
 	Actor::map = this;
@@ -24,15 +22,13 @@ void World::draw(sf::RenderTarget& target)
 {
 	sf::RenderStates states;
 	states.texture = tileset;
-	preWindow.clear();
 
-	preWindow.draw(vertices, states);
+	target.draw(vertices, states);
 
 	for(auto it : rooms)
 		for(auto obj : it.second)
-			preWindow.draw(*obj);
+			target.draw(*obj);
 
-	preWindow.display();
 	target.draw(light);
 }
 

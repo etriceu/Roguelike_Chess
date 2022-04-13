@@ -6,26 +6,27 @@
 
 class Light : public sf::Drawable
 {
-	static constexpr int MAX_LIGHTS = 96;
 	static constexpr int WIDTH = 1680;
+	static constexpr uint32_t ambient = 0x323232ff;
 public:
-	Light(sf::RenderTexture *preWindow);
+	Light(int width, int height);
 
-	bool addLight(sf::Vector2f pos, sf::Color color, float bright, float radius);
+	void addLight(sf::Vector2f pos, sf::Color color, float bright, float radius);
 	void apply();
 	void clear();
-	void setPlayerLight(sf::Color color, float bright);
-	void setPlayerLightPos(sf::Vector2f pos, float radius);
+	void setPlayerLight(sf::Color color, float bright, float radius);
+	void setPlayerLightPos(sf::Vector2f pos);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
-	sf::Shader shader;
-	sf::RenderTexture *rt;
+	void makeLight(sf::Image &img, sf::Vector2f pos, sf::Color color,
+				   float bright, float radius);
 
-	vector <sf::Glsl::Vec4> colors;
-	vector <sf::Glsl::Vec3> circles;
-	sf::Glsl::Vec4 playerColor;
-	sf::Glsl::Vec3 playerCircle;
+	sf::Image staticLight, finalLight;
+	sf::Texture tx;
+	sf::Sprite light;
+	sf::Color pc;
+	float pb, pr;
 };
 
 #endif // LIGHT_HPP_INCLUDED

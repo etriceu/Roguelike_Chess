@@ -33,7 +33,7 @@ Player::Player()
 		artifacts[n].setScale(2, 2);
 	}
 
-	light->setPlayerLight(sf::Color(LCOLOR), LBRIGHT);
+	light->setPlayerLight(sf::Color(LCOLOR), LBRIGHT, LRADIUS);
 }
 
 void Player::update()
@@ -66,8 +66,8 @@ void Player::update()
 	}
 	sf::Listener::setPosition(getPosition().x, 0.f, getPosition().y);
 	Actor::update();
-	light->setPlayerLightPos({getPosition().x+OFFSET.x, getPosition().y+OFFSET.y},
-							 enabled_artifacts[Artifact::LANTERN] ? LRADIUS : -1);
+	int foo = enabled_artifacts[Artifact::LANTERN] ? 0 : -9999999;
+	light->setPlayerLightPos({getPosition().x+OFFSET.x+foo, getPosition().y+OFFSET.y+foo});
 }
 
 void Player::control()
@@ -96,7 +96,6 @@ void Player::control()
 
 			if(obj->type == ENEMY)
 			{
-				setPosition(ceil(room.left+(room.width-1)/2), room.top+room.height-1);
 				fight = true;
 			}
 			else if(obj->type == ARTIFACT)
@@ -126,4 +125,3 @@ void Player::drawUI(sf::RenderTarget& rt)
 	rt.draw(info[0]);
 	rt.draw(info[1]);
 }
-

@@ -30,7 +30,7 @@ protected:
 	const int ROOM_RAND_HEIGHT = 3;
 
 public:
-	MapGenerator(sf::RenderTexture *preWindow);
+	MapGenerator();
 
 	Object *player;
 	map <sf::IntRect, list<Object*>, compRooms> rooms;

@@ -27,7 +27,6 @@ private:
 	void addObjects();
 	void destroyObjects();
 
-	sf::RenderTexture preWindow;
 	sf::Clock clock;
 };
 
