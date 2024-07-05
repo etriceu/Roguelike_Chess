@@ -186,7 +186,7 @@ bool MapGenerator::buildTunnels(vector<sf::IntRect> rooms)
 
 bool MapGenerator::fixTiles()
 {
-	const vector <array <char, 11>> tab = {
+	const vector <vector<char>> tab = {{
 		{-1, -1, -1, -1, WALL, WALL, -1, WALL, FLOOR, 0, 4},
 		{-1, FLOOR, FLOOR, WALL, WALL, FLOOR, -1, WALL, -1, 8, 4},
 		{-1, -1, -1, WALL, WALL, WALL, -1, FLOOR, -1, 4, 4},
@@ -199,7 +199,7 @@ bool MapGenerator::fixTiles()
 		{-1, FLOOR, -1, WALL, WALL, WALL, FLOOR, WALL, FLOOR, 32, 4},
 		{FLOOR, FLOOR, -1, FLOOR, WALL, WALL, -1, WALL, FLOOR, 36, 4},
 		{FLOOR, WALL, FLOOR, WALL, WALL, WALL, FLOOR, WALL, -1, 40, 4},
-		{FLOOR, WALL, FLOOR, WALL, WALL, WALL, FLOOR, WALL, FLOOR, 44, 1}};
+		{FLOOR, WALL, FLOOR, WALL, WALL, WALL, FLOOR, WALL, FLOOR, 44, 1}}};
 
 	const int F_HALF_SIZ = (FLOORX-FLOOR)/2;
 	const int rotate[] = {6, 3, 0, 7, 4, 1, 8, 5, 2};
